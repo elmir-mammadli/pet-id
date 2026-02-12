@@ -44,9 +44,9 @@ export function ClaimTagForm({ activationToken }: Props) {
     const payload: CreatePetInput = {
       name,
       age_years: input.age_years ?? null,
-      breed: input.breed.trim(),
-      photo_path: input.photo_path.trim(),
-      notes: input.notes.trim(),
+      breed: input.breed?.trim() ?? "",
+      photo_path: input.photo_path?.trim() ?? "",
+      notes: input.notes?.trim() ?? "",
       is_active: input.is_active,
     };
 
@@ -122,7 +122,7 @@ export function ClaimTagForm({ activationToken }: Props) {
           <input
             id="claim-breed"
             type="text"
-            value={input.breed}
+            value={input.breed ?? ""}
             onChange={(e) => setInput((p) => ({ ...p, breed: e.target.value }))}
             className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="Labrador"
@@ -159,7 +159,7 @@ export function ClaimTagForm({ activationToken }: Props) {
         <input
           id="claim-photo-url"
           type="url"
-          value={input.photo_path}
+          value={input.photo_path ?? ""}
           onChange={(e) => setInput((p) => ({ ...p, photo_path: e.target.value }))}
           className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
           placeholder="https://..."
@@ -173,7 +173,7 @@ export function ClaimTagForm({ activationToken }: Props) {
         <textarea
           id="claim-notes"
           rows={3}
-          value={input.notes}
+          value={input.notes ?? ""}
           onChange={(e) => setInput((p) => ({ ...p, notes: e.target.value }))}
           className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
           placeholder="e.g. Microchipped, friendly with kids"

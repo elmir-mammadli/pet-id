@@ -121,7 +121,7 @@ export async function submitFoundForm(
     };
   }
 
-  const userAgent = headers().get("user-agent");
+  const userAgent = (await headers()).get("user-agent");
 
   const { error: insertError } = await serviceClient.from("alerts").insert({
     pet_id: petRow.id,
