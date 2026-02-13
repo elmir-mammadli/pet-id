@@ -44,7 +44,7 @@ const Index = () => {
             alt="A cute golden retriever puppy"
             width={heroPet.width}
             height={heroPet.height}
-            className="h-48 md:h-64 w-full object-cover"
+            className="h-full w-full object-contain"
           />
         </div>
 
