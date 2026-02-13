@@ -66,7 +66,7 @@ export function PetCard({ pet, baseUrl }: Props) {
               rel="noopener noreferrer"
               className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
             >
-              Open tag page →
+              View as tag page
             </a>
             <Link
               href={`/dashboard/pets/${pet.id}/edit`}
