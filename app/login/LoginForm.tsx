@@ -74,6 +74,14 @@ export function LoginForm({ redirectTo }: Props) {
           onChange={(e) => setPassword(e.target.value)}
           className="brand-input mt-1"
         />
+        <div className="mt-1 text-right">
+          <a
+            href="/reset-password"
+            className="text-xs font-semibold text-[var(--brand-strong)] hover:underline"
+          >
+            Forgot password?
+          </a>
+        </div>
       </div>
 
       {error && (

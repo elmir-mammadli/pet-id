@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { ScanLine, ShoppingBag } from "lucide-react";
 
+import { ETSY_TAG_URL } from "@/lib/constants";
 import type { Pet } from "@/lib/types/pet";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -43,20 +45,36 @@ export default async function DashboardPage() {
 
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">My pets</h2>
-          <Link href="/dashboard/pets/new" className="brand-button brand-button-primary px-4 py-2 text-sm">
-            Add pet
-          </Link>
         </div>
+
+        <section className="brand-card-muted mb-5 p-4">
+          <p className="text-sm font-semibold text-[var(--ink)]">Add another pet profile</p>
+          <p className="mt-1 text-sm text-[var(--ink-soft)]">
+            This app is tag-first: buy a new NFC tag, then tap/scan it to open its activation link.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a
+              href={ETSY_TAG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="brand-button brand-button-secondary border px-4 py-2 text-sm"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              Buy new tag
+            </a>
+            <Link href="/dashboard/pets/new" className="brand-button brand-button-secondary border px-4 py-2 text-sm">
+              <ScanLine className="h-4 w-4" />
+              Activation help
+            </Link>
+          </div>
+        </section>
 
         {(pets?.length ?? 0) === 0 ? (
           <div className="brand-card p-8 text-center">
             <p className="text-[var(--ink-soft)]">No pets added yet.</p>
             <p className="mt-1 text-sm text-[var(--ink-soft)]">
-              Add your first pet to generate a shareable tag page.
+              Buy a tag and activate it by tapping the NFC chip on your phone.
             </p>
-            <Link href="/dashboard/pets/new" className="brand-button brand-button-primary mt-4 text-sm">
-              Add first pet
-            </Link>
           </div>
         ) : (
           <ul className="space-y-4">

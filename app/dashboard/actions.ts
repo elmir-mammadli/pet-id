@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 
-import { generatePublicId } from "@/lib/utils/public-id";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PetUpdate } from "@/lib/types/pet";
 
@@ -27,53 +26,12 @@ export type CreatePetResult =
 export async function createPet(
   input: CreatePetInput,
 ): Promise<CreatePetResult> {
-  const name = input.name?.trim();
-  if (!name) {
-    return { ok: false, error: "Name is required." };
-  }
-
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { ok: false, error: "You must be logged in to add a pet." };
-  }
-
-  let publicId = generatePublicId();
-  const maxAttempts = 5;
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const { data: existing } = await supabase
-      .from("pets")
-      .select("id")
-      .eq("public_id", publicId)
-      .maybeSingle();
-    if (!existing) break;
-    publicId = generatePublicId();
-  }
-
-  const { data: pet, error } = await supabase
-    .from("pets")
-    .insert({
-      owner_id: user.id,
-      public_id: publicId,
-      name,
-      age_years: input.age_years ?? null,
-      breed: input.breed?.trim() || null,
-      photo_path: input.photo_path?.trim() || null,
-      notes: input.notes?.trim() || null,
-      is_active: input.is_active ?? true,
-    })
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("[createPet]", error);
-    return { ok: false, error: "Failed to create pet. Please try again." };
-  }
-
-  revalidatePath("/dashboard");
-  return { ok: true, petId: pet.id };
+  void input;
+  return {
+    ok: false,
+    error:
+      "New pet profiles are created during tag activation. Tap your new NFC tag and complete setup from the activation link.",
+  };
 }
 
 export type UpdatePetResult = { ok: true } | { ok: false; error: string };

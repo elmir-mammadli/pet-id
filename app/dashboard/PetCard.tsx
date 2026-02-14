@@ -37,7 +37,7 @@ export function PetCard({ pet, baseUrl }: Props) {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col items-start justify-between gap-2">
             <div>
               <h3 className="font-bold text-[var(--ink)]">{pet.name}</h3>
               {subtitle.length > 0 && <p className="text-sm text-[var(--ink-soft)]">{subtitle.join(" · ")}</p>}
@@ -49,20 +49,27 @@ export function PetCard({ pet, baseUrl }: Props) {
             >
               {pet.is_active ? "Active" : "Inactive"}
             </span>
+            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm ml-2 font-semibold text-[var(--ink-soft)] hover:underline">
+              Edit
+            </Link>
           </div>
           <p className="mt-2 truncate font-mono text-xs text-[var(--ink-soft)]" title={publicUrl}>
             {publicUrl}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-1">
+            <Link href={`/dashboard/pets/${pet.id}`} className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
+              Owner view
+            </Link>
+            <span className="text-[#b1b8ad] text-sm">·</span>
             <a
               href={publicUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-[var(--brand-strong)] hover:underline"
+              className="text-sm font-semibold text-[var(--ink-soft)] hover:underline"
             >
               Open public page
             </a>
-            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm font-semibold text-[var(--ink-soft)] hover:underline">
+            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm ml-2 font-semibold text-[var(--ink-soft)] hover:underline">
               Edit
             </Link>
             <span className="text-[#b1b8ad]">·</span>

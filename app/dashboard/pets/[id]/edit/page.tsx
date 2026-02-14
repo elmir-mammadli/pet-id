@@ -43,6 +43,9 @@ export default async function EditPetPage({ params }: Props) {
         <Link href="/dashboard" className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
           Back to dashboard
         </Link>
+        <Link href={`/dashboard/pets/${id}`} className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
+          Owner view
+        </Link>
         <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">Edit {pet.name}</h1>
       </header>
 

@@ -6,6 +6,8 @@ import { useRef, useState } from "react";
 
 import type { CreatePetInput } from "@/app/dashboard/actions";
 import { uploadPetPhoto } from "@/app/dashboard/actions";
+import { uploadDocument } from "@/app/dashboard/documents/actions";
+import type { DocumentType } from "@/lib/types/document";
 
 import { claimTag, type ClaimTagResult } from "./actions";
 
@@ -25,9 +27,11 @@ const defaultInput: CreatePetInput = {
 export function ClaimTagForm({ activationToken }: Props) {
   const router = useRouter();
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const documentInputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState<CreatePetInput>(defaultInput);
   const [ownerName, setOwnerName] = useState("");
   const [ownerPhone, setOwnerPhone] = useState("");
+  const [documentType, setDocumentType] = useState<DocumentType>("vet");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -70,8 +74,21 @@ export function ClaimTagForm({ activationToken }: Props) {
       formData.set("photo", file);
       const uploadResult = await uploadPetPhoto(result.petId, formData);
       if (!uploadResult.ok) {
-        setError(uploadResult.error);
-        setLoading(false);
+        router.push(`/dashboard/pets/${result.petId}/edit`);
+        router.refresh();
+        return;
+      }
+    }
+
+    const firstDoc = documentInputRef.current?.files?.[0];
+    if (firstDoc && firstDoc.size > 0) {
+      const documentFormData = new FormData();
+      documentFormData.set("type", documentType);
+      documentFormData.set("file", firstDoc);
+      const documentResult = await uploadDocument(result.petId, documentFormData);
+      if (!documentResult.ok) {
+        router.push(`/dashboard/pets/${result.petId}/edit`);
+        router.refresh();
         return;
       }
     }
@@ -205,6 +222,45 @@ export function ClaimTagForm({ activationToken }: Props) {
             Activate tag immediately after registration
           </span>
         </label>
+      </section>
+
+      <section className="space-y-4 border-t border-[var(--line)] pt-5">
+        <h3 className="text-lg font-extrabold tracking-tight text-[var(--ink)]">Optional first document</h3>
+        <p className="text-sm text-[var(--ink-soft)]">
+          You can upload one document now (vet, vaccine, insurance, or other). You can add more later.
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="claim-document-type" className="block text-sm font-semibold text-[var(--ink)]">
+              Document type
+            </label>
+            <select
+              id="claim-document-type"
+              value={documentType}
+              onChange={(e) => setDocumentType(e.target.value as DocumentType)}
+              className="brand-input mt-1"
+            >
+              <option value="vet">Vet / health</option>
+              <option value="vaccine">Vaccine</option>
+              <option value="insurance">Insurance</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="claim-document-file" className="block text-sm font-semibold text-[var(--ink)]">
+              File
+            </label>
+            <input
+              ref={documentInputRef}
+              id="claim-document-file"
+              type="file"
+              name="document"
+              accept=".pdf,image/jpeg,image/png,image/webp,image/gif"
+              className="brand-input mt-1"
+            />
+          </div>
+        </div>
       </section>
 
       <section className="space-y-4 border-t border-[var(--line)] pt-5">

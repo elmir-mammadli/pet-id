@@ -6,16 +6,18 @@ import {
   CheckCircle2,
   Clock3,
   ShieldCheck,
+  ShoppingBag,
   Smartphone,
   Sparkles,
 } from "lucide-react";
 
+import { ETSY_TAG_URL } from "@/lib/constants";
 import heroPet from "@/public/images/hero-pet.png";
 
 export const metadata: Metadata = {
-  title: "Smart Pet ID Tags That Bring Pets Home Faster",
+  title: "NFC Pet Tags That Bring Pets Home Faster",
   description:
-    "Activate a digital pet ID in minutes. If your dog or cat is found, Pet ID sends private alerts so you reconnect quickly.",
+    "Buy an NFC Pet ID tag and activate it in minutes. If your dog or cat is found, Pet ID sends private alerts so you reconnect quickly.",
 };
 
 const trustPoints = [
@@ -26,18 +28,18 @@ const trustPoints = [
 
 const steps = [
   {
-    title: "Activate your tag",
-    body: "Create a secure profile and link one tag to your pet in a few taps.",
-    icon: ShieldCheck,
+    title: "Buy your NFC tag",
+    body: "Order the physical tag, attach it to your pet, and keep it on the collar.",
+    icon: ShoppingBag,
   },
   {
-    title: "Finder scans and reports",
-    body: "They see clear instructions and can send location plus message immediately.",
+    title: "Tap and activate",
+    body: "Tap the tag with your phone and complete activation from the personal token link.",
     icon: Smartphone,
   },
   {
-    title: "Get alerted instantly",
-    body: "You receive the alert fast and coordinate pickup with less panic and confusion.",
+    title: "Get alerts instantly",
+    body: "When someone finds your pet, they can notify you in seconds through the public profile page.",
     icon: BellRing,
   },
 ];
@@ -45,16 +47,17 @@ const steps = [
 export default function HomePage() {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Pet ID",
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Web",
-    description:
-      "Digital pet ID and recovery alerts platform for dogs and cats.",
+    "@type": "Product",
+    name: "Pet ID NFC Tag",
+    description: "NFC pet tag with digital profile and recovery alerts.",
+    brand: "Pet ID",
+    category: "Pet Safety",
     offers: {
       "@type": "Offer",
-      price: "0",
+      price: "19.99",
       priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: ETSY_TAG_URL,
     },
   };
 
@@ -76,12 +79,34 @@ export default function HomePage() {
             <Link href="/login" className="brand-button brand-button-secondary px-4 py-2 text-sm">
               Log in
             </Link>
-            <Link href="/signup" className="brand-button brand-button-primary px-4 py-2 text-sm">
-              Get started
-            </Link>
+            <a
+              href={ETSY_TAG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="brand-button brand-button-primary px-4 py-2 text-sm"
+            >
+              Buy tag
+            </a>
           </div>
         </div>
       </header>
+
+      <section className="mx-auto mt-4 w-full max-w-6xl px-4">
+        <div className="brand-card-muted flex flex-col items-start justify-between gap-3 p-4 sm:flex-row sm:items-center">
+          <p className="text-sm font-medium text-[var(--ink-soft)]">
+            New customer? Buy your NFC pet tag first, then tap it to start activation.
+          </p>
+          <a
+            href={ETSY_TAG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="brand-button brand-button-secondary border px-4 py-2 text-sm"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Shop on Etsy
+          </a>
+        </div>
+      </section>
 
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-12 pt-10 md:grid-cols-[1.05fr_0.95fr] md:items-center md:pt-16">
         <div className="reveal-up space-y-6">
@@ -91,19 +116,24 @@ export default function HomePage() {
           </span>
 
           <h1 className="max-w-xl text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
-            Digital pet tags built for real emergency moments.
+            NFC pet tags built for real emergency moments.
           </h1>
 
           <p className="max-w-xl text-base leading-relaxed text-[var(--ink-soft)] sm:text-lg">
-            When someone finds your pet, they get one clear action path. You get a direct alert. No account needed for finders, no chaos for families.
+            Buy a physical tag, attach it to your pet, then activate it by tapping the tag on a phone. Finders get one clear action path and you get a direct alert.
           </p>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link href="/signup" className="brand-button brand-button-primary text-base">
-              Protect my pet now
-            </Link>
+            <a
+              href={ETSY_TAG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="brand-button brand-button-primary text-base"
+            >
+              Buy tag on Etsy
+            </a>
             <Link href="/login" className="brand-button brand-button-secondary text-base">
-              I already have an account
+              I already own a tag
             </Link>
           </div>
 

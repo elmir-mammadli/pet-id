@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ next?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; reset?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: Props) {
-  const { next, error } = await searchParams;
+  const { next, error, reset } = await searchParams;
 
   return (
     <main className="min-h-screen px-4 py-10 sm:py-14">
@@ -51,6 +51,11 @@ export default async function LoginPage({ searchParams }: Props) {
               Something went wrong during sign in. Please try again.
             </div>
           )}
+          {reset === "success" && (
+            <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+              Password updated. You can log in with your new password.
+            </div>
+          )}
 
           <div className="mt-5 space-y-4">
             <OAuthButtons redirectTo={next ?? "/dashboard"} />
@@ -69,7 +74,12 @@ export default async function LoginPage({ searchParams }: Props) {
 
           <p className="mt-5 text-center text-sm text-[var(--ink-soft)]">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-semibold text-[var(--brand-strong)] hover:underline">
+            <Link
+              href={
+                next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"
+              }
+              className="font-semibold text-[var(--brand-strong)] hover:underline"
+            >
               Create one
             </Link>
           </p>
