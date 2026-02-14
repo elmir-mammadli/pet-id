@@ -23,7 +23,7 @@ function SubmitButton() {
       className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:bg-emerald-400"
       disabled={pending}
     >
-      {pending ? "Sending..." : "Send alert to the owner"}
+      {pending ? "Sending…" : "Send message & text the owner"}
     </button>
   );
 }

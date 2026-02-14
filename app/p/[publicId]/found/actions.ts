@@ -163,18 +163,27 @@ export async function submitFoundForm(
   const ownerPhone = ownerProfile?.phone?.trim();
   if (ownerPhone) {
     const ownerName = ownerProfile?.display_name?.trim() || "there";
-    const ageStr =
-      pet.age_years != null
-        ? `${pet.age_years} year${pet.age_years === 1 ? "" : "s"} old`
-        : "";
-    const breedStr = pet.breed?.trim() || "pet";
+    const petInfo =
+      pet.age_years != null && pet.breed?.trim()
+        ? ` (${pet.age_years} year${pet.age_years === 1 ? "" : "s"} old ${pet.breed.trim()})`
+        : pet.breed?.trim()
+          ? ` (${pet.breed.trim()})`
+          : pet.age_years != null
+            ? ` (${pet.age_years} year${pet.age_years === 1 ? "" : "s"} old)`
+            : "";
     const locationStr = finderLocationUrl
       ? finderLocationUrl
-      : "Location not shared.";
+      : "Not shared";
     const contactStr = finderPhone
       ? finderPhone
-      : "See the alert in your Pet ID dashboard for my message.";
-    const body = `Hi ${ownerName}! I found your pet ${pet.name}. ${ageStr ? `It's a ${ageStr} ${breedStr}. ` : ""}${finderMessage} My location: ${locationStr}. Please call or text me: ${contactStr}.`;
+      : "See Pet ID dashboard for my message";
+    const body = [
+      `Hi ${ownerName}! Someone found ${pet.name}${petInfo}.`,
+      "",
+      finderMessage,
+      "",
+      `Location: ${locationStr}. Contact: ${contactStr}.`,
+    ].join("\n");
     const normalized = ownerPhone.replace(/\D/g, "");
     const smsPhone = normalized ? `+${normalized}` : ownerPhone;
     smsLink = `sms:${smsPhone}?body=${encodeURIComponent(body)}`;

@@ -125,7 +125,7 @@ export default async function PublicPetPage({ params }: PageProps) {
               href={`/p/${encodeURIComponent(pet.public_id)}/found`}
               className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
-              I found {pet.name}
+              I found {pet.name}!
             </Link>
           </div>
         </section>
