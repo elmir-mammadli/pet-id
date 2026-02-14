@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { Pet } from "@/lib/types/pet";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+import { getProfile } from "./actions";
 import { PetCard } from "./PetCard";
+import { ProfileSection } from "./ProfileSection";
 import { SignOutButton } from "./SignOutButton";
 
 function getBaseUrl(): string {
@@ -18,11 +20,14 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: pets } = await supabase
-    .from("pets")
-    .select("id, owner_id, public_id, name, age_years, breed, photo_path, notes, is_active, created_at, updated_at")
-    .eq("owner_id", user?.id ?? "")
-    .order("created_at", { ascending: false });
+  const [profile, { data: pets }] = await Promise.all([
+    getProfile(),
+    supabase
+      .from("pets")
+      .select("id, owner_id, public_id, name, age_years, breed, photo_path, notes, is_active, created_at, updated_at")
+      .eq("owner_id", user?.id ?? "")
+      .order("created_at", { ascending: false }),
+  ]);
 
   const baseUrl = getBaseUrl();
 
@@ -36,6 +41,8 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-2xl px-4 py-8">
+        <ProfileSection profile={profile} />
+
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-zinc-900">My pets</h2>
           <Link

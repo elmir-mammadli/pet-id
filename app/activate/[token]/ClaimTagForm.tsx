@@ -26,6 +26,8 @@ export function ClaimTagForm({ activationToken }: Props) {
   const router = useRouter();
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState<CreatePetInput>(defaultInput);
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerPhone, setOwnerPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +52,12 @@ export function ClaimTagForm({ activationToken }: Props) {
       is_active: input.is_active,
     };
 
-    const result: ClaimTagResult = await claimTag(activationToken, payload);
+    const profileInput = {
+      display_name: ownerName.trim() || null,
+      phone: ownerPhone.trim() || null,
+    };
+
+    const result: ClaimTagResult = await claimTag(activationToken, payload, profileInput);
     if (!result.ok) {
       setError(result.error);
       setLoading(false);
@@ -191,6 +198,42 @@ export function ClaimTagForm({ activationToken }: Props) {
           Tag is active (finders can report finding this pet)
         </span>
       </label>
+
+      <div className="border-t border-zinc-200 pt-4">
+        <h3 className="mb-3 text-sm font-semibold text-zinc-800">About you</h3>
+        <p className="mb-3 text-xs text-zinc-500">
+          So finders can text you directly when they find your pet (optional).
+        </p>
+        <div className="space-y-3">
+          <div>
+            <label htmlFor="claim-owner-name" className="block text-sm font-medium text-zinc-800">
+              Your name
+            </label>
+            <input
+              id="claim-owner-name"
+              type="text"
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              placeholder="e.g. Alex"
+            />
+          </div>
+          <div>
+            <label htmlFor="claim-owner-phone" className="block text-sm font-medium text-zinc-800">
+              Your phone number
+            </label>
+            <input
+              id="claim-owner-phone"
+              type="tel"
+              inputMode="tel"
+              value={ownerPhone}
+              onChange={(e) => setOwnerPhone(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              placeholder="e.g. +7 900 123 45 67"
+            />
+          </div>
+        </div>
+      </div>
 
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">

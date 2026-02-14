@@ -239,3 +239,59 @@ export async function uploadPetPhoto(
   revalidatePath(`/dashboard/pets/${petId}/edit`);
   return { ok: true, url: publicUrl };
 }
+
+// ——— Owner profile (for SMS link when finder reports pet) ———
+
+export type ProfileData = {
+  display_name: string | null;
+  phone: string | null;
+};
+
+export async function getProfile(): Promise<ProfileData | null> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("display_name, phone")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  return data ?? { display_name: null, phone: null };
+}
+
+export type UpdateProfileResult = { ok: true } | { ok: false; error: string };
+
+export async function updateProfile(
+  displayName: string | null,
+  phone: string | null,
+): Promise<UpdateProfileResult> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { ok: false, error: "You must be logged in." };
+  }
+
+  const { error } = await supabase.from("profiles").upsert(
+    {
+      user_id: user.id,
+      display_name: displayName?.trim() || null,
+      phone: phone?.trim() || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
+
+  if (error) {
+    console.error("[updateProfile]", error);
+    return { ok: false, error: "Failed to save profile. Please try again." };
+  }
+
+  revalidatePath("/dashboard");
+  return { ok: true };
+}

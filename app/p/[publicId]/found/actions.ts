@@ -11,6 +11,8 @@ import {
 export type FoundFormState = {
   status: "idle" | "submitting" | "success" | "error";
   error?: string;
+  /** When owner has phone, link to open SMS app with pre-filled message. */
+  smsLink?: string | null;
 };
 
 const MAX_MESSAGE_LENGTH = 1000;
@@ -104,12 +106,12 @@ export async function submitFoundForm(
     };
   }
 
-  // Ищем фактический pet_id через сервисный клиент (обходит RLS, но мы уже проверили условия).
+  // Ищем фактический pet_id и owner_id через сервисный клиент.
   const serviceClient = createSupabaseServiceRoleClient();
 
   const { data: petRow, error: petRowError } = await serviceClient
     .from("pets")
-    .select("id")
+    .select("id, owner_id")
     .eq("public_id", publicId)
     .maybeSingle();
 
@@ -150,8 +152,37 @@ export async function submitFoundForm(
     secure: true,
   });
 
+  // Собираем SMS-ссылку для finder'а, если у владельца указан телефон.
+  let smsLink: string | null = null;
+  const { data: ownerProfile } = await serviceClient
+    .from("profiles")
+    .select("phone, display_name")
+    .eq("user_id", petRow.owner_id)
+    .maybeSingle();
+
+  const ownerPhone = ownerProfile?.phone?.trim();
+  if (ownerPhone) {
+    const ownerName = ownerProfile?.display_name?.trim() || "there";
+    const ageStr =
+      pet.age_years != null
+        ? `${pet.age_years} year${pet.age_years === 1 ? "" : "s"} old`
+        : "";
+    const breedStr = pet.breed?.trim() || "pet";
+    const locationStr = finderLocationUrl
+      ? finderLocationUrl
+      : "Location not shared.";
+    const contactStr = finderPhone
+      ? finderPhone
+      : "See the alert in your Pet ID dashboard for my message.";
+    const body = `Hi ${ownerName}! I found your pet ${pet.name}. ${ageStr ? `It's a ${ageStr} ${breedStr}. ` : ""}${finderMessage} My location: ${locationStr}. Please call or text me: ${contactStr}.`;
+    const normalized = ownerPhone.replace(/\D/g, "");
+    const smsPhone = normalized ? `+${normalized}` : ownerPhone;
+    smsLink = `sms:${smsPhone}?body=${encodeURIComponent(body)}`;
+  }
+
   return {
     status: "success",
+    smsLink,
   };
 }
 

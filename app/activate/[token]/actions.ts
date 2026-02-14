@@ -7,16 +7,22 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import type { CreatePetInput } from "@/app/dashboard/actions";
 
+export type ClaimTagProfileInput = {
+  display_name?: string | null;
+  phone?: string | null;
+};
+
 export type ClaimTagResult =
   | { ok: true; publicId: string; petId: string }
   | { ok: false; error: string };
 
 /**
- * Claims an unclaimed tag: creates pet, binds tag to pet and owner.
+ * Claims an unclaimed tag: creates pet, binds tag, saves owner profile (name, phone).
  */
 export async function claimTag(
   activationToken: string,
   input: CreatePetInput,
+  profileInput?: ClaimTagProfileInput,
 ): Promise<ClaimTagResult> {
   const name = input.name?.trim();
   if (!name) {
@@ -89,6 +95,18 @@ export async function claimTag(
   if (tagError) {
     console.error("[claimTag] update tag", tagError);
     return { ok: false, error: "Pet created but tag link failed. Contact support." };
+  }
+
+  if (profileInput && (profileInput.display_name?.trim() || profileInput.phone?.trim())) {
+    await supabase.from("profiles").upsert(
+      {
+        user_id: user.id,
+        display_name: profileInput.display_name?.trim() || null,
+        phone: profileInput.phone?.trim() || null,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
   }
 
   revalidatePath("/dashboard");

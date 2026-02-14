@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 import { submitFoundForm, type FoundFormState } from "./actions";
@@ -37,13 +37,6 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   const [locationUrl, setLocationUrl] = useState("");
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Если сабмит был успешным — можно сбросить часть локального состояния.
-    if (state.status === "success") {
-      setLocationStatus(null);
-    }
-  }, [state.status]);
-
   async function handleUseLocation() {
     if (!("geolocation" in navigator)) {
       setLocationStatus("Geolocation is not supported on this device.");
@@ -79,6 +72,14 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
           Your message has been sent to {petName}&apos;s human. They&apos;ll
           reach out to you as soon as possible.
         </p>
+        {state.smsLink && (
+          <a
+            href={state.smsLink}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            Text the owner
+          </a>
+        )}
       </div>
     );
   }
