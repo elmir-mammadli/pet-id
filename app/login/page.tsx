@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 
 import { LoginForm } from "./LoginForm";
 import { OAuthButtons } from "./OAuthButtons";
 
 export const metadata: Metadata = {
-  title: "Log in | Pet ID",
-  description: "Log in to your Pet ID account",
+  title: "Log In",
+  description: "Access your Pet ID dashboard to manage pet profiles and recovery alerts.",
 };
 
 type Props = {
@@ -17,43 +18,62 @@ export default async function LoginPage({ searchParams }: Props) {
   const { next, error } = await searchParams;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-100 px-4 py-10">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-zinc-900">Log in</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            Enter your email and password to access your pets.
-          </p>
-        </div>
-
-        {error === "auth" && (
-          <div className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-            Something went wrong during sign in. Please try again.
-          </div>
-        )}
-
-        <OAuthButtons redirectTo={next ?? "/dashboard"} />
-
-        <div className="relative">
-          <span className="absolute inset-0 flex items-center" aria-hidden>
-            <span className="w-full border-t border-zinc-200" />
+    <main className="min-h-screen px-4 py-10 sm:py-14">
+      <div className="mx-auto grid w-full max-w-5xl gap-6 md:grid-cols-[1fr_1.05fr] md:items-center">
+        <section className="brand-card-muted hidden p-8 md:block">
+          <span className="brand-pill">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Account security
           </span>
-          <p className="relative flex justify-center text-xs text-zinc-500">
-            <span className="bg-zinc-100 px-2">or</span>
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[var(--ink)]">
+            Welcome back.
+          </h1>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">
+            Sign in to update your pet profile, keep your tag active, and respond fast to finder alerts.
           </p>
-        </div>
+          <div className="mt-6 space-y-3 text-sm text-[var(--ink-soft)]">
+            <p>Private owner details stay protected.</p>
+            <p>Finder alerts land instantly.</p>
+            <p>Designed for mobile recovery moments.</p>
+          </div>
+        </section>
 
-        <LoginForm redirectTo={next ?? "/dashboard"} />
+        <section className="brand-card p-5 sm:p-7">
+          <div className="text-center">
+            <h2 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">Log in</h2>
+            <p className="mt-1.5 text-sm text-[var(--ink-soft)]">
+              Enter your details to access your dashboard.
+            </p>
+          </div>
 
-        <p className="text-center text-sm text-zinc-600">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-emerald-600 hover:text-emerald-700"
-          >
-            Sign up
-          </Link>
-        </p>
+          {error === "auth" && (
+            <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              Something went wrong during sign in. Please try again.
+            </div>
+          )}
+
+          <div className="mt-5 space-y-4">
+            <OAuthButtons redirectTo={next ?? "/dashboard"} />
+
+            <div className="relative">
+              <span className="absolute inset-0 flex items-center" aria-hidden>
+                <span className="w-full border-t border-[var(--line)]" />
+              </span>
+              <p className="relative flex justify-center text-xs text-[var(--ink-soft)]">
+                <span className="bg-white px-2">or continue with email</span>
+              </p>
+            </div>
+
+            <LoginForm redirectTo={next ?? "/dashboard"} />
+          </div>
+
+          <p className="mt-5 text-center text-sm text-[var(--ink-soft)]">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="font-semibold text-[var(--brand-strong)] hover:underline">
+              Create one
+            </Link>
+          </p>
+        </section>
       </div>
     </main>
   );

@@ -14,11 +14,7 @@ export function SignOutButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleSignOut}
-      className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
-    >
+    <button type="button" onClick={handleSignOut} className="brand-button brand-button-secondary border px-4 py-2 text-sm">
       Sign out
     </button>
   );

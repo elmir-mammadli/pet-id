@@ -32,38 +32,30 @@ export default async function DashboardPage() {
   const baseUrl = getBaseUrl();
 
   return (
-    <main className="min-h-screen bg-zinc-100">
-      <header className="border-b border-zinc-200 bg-white px-4 py-3">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <h1 className="text-lg font-semibold text-zinc-900">Pet ID</h1>
-          <SignOutButton />
-        </div>
+    <main className="min-h-screen px-4 py-6 sm:py-8">
+      <header className="glass-panel mx-auto flex w-full max-w-3xl items-center justify-between rounded-full px-4 py-2.5">
+        <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">Pet ID Dashboard</h1>
+        <SignOutButton />
       </header>
 
-      <div className="mx-auto max-w-2xl px-4 py-8">
+      <div className="mx-auto mt-5 w-full max-w-3xl">
         <ProfileSection profile={profile} />
 
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-zinc-900">My pets</h2>
-          <Link
-            href="/dashboard/pets/new"
-            className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
-          >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">My pets</h2>
+          <Link href="/dashboard/pets/new" className="brand-button brand-button-primary px-4 py-2 text-sm">
             Add pet
           </Link>
         </div>
 
         {(pets?.length ?? 0) === 0 ? (
-          <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
-            <p className="text-zinc-600">You don&apos;t have any pets yet.</p>
-            <p className="mt-1 text-sm text-zinc-500">
-              Add your first pet to get a shareable tag link.
+          <div className="brand-card p-8 text-center">
+            <p className="text-[var(--ink-soft)]">No pets added yet.</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">
+              Add your first pet to generate a shareable tag page.
             </p>
-            <Link
-              href="/dashboard/pets/new"
-              className="mt-4 inline-block rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-            >
-              Add pet
+            <Link href="/dashboard/pets/new" className="brand-button brand-button-primary mt-4 text-sm">
+              Add first pet
             </Link>
           </div>
         ) : (
@@ -76,11 +68,8 @@ export default async function DashboardPage() {
           </ul>
         )}
 
-        <Link
-          href="/"
-          className="mt-8 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700"
-        >
-          ← Back to home
+        <Link href="/" className="mt-8 inline-block text-sm font-semibold text-[var(--brand-strong)] hover:underline">
+          Back to home
         </Link>
       </div>
     </main>

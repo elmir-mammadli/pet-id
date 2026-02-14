@@ -44,15 +44,9 @@ export function LoginForm({ redirectTo }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <label
-          htmlFor="login-email"
-          className="block text-sm font-medium text-zinc-800"
-        >
+        <label htmlFor="login-email" className="block text-sm font-semibold text-[var(--ink)]">
           Email
         </label>
         <input
@@ -62,16 +56,13 @@ export function LoginForm({ redirectTo }: Props) {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 placeholder:text-zinc-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="brand-input mt-1"
           placeholder="you@example.com"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="login-password"
-          className="block text-sm font-medium text-zinc-800"
-        >
+        <label htmlFor="login-password" className="block text-sm font-semibold text-[var(--ink)]">
           Password
         </label>
         <input
@@ -81,12 +72,12 @@ export function LoginForm({ redirectTo }: Props) {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 placeholder:text-zinc-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="brand-input mt-1"
         />
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -94,9 +85,9 @@ export function LoginForm({ redirectTo }: Props) {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-emerald-400"
+        className="brand-button brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Signing in…" : "Log in"}
+        {loading ? "Signing in..." : "Log in"}
       </button>
     </form>
   );

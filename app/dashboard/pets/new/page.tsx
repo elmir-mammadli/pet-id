@@ -5,24 +5,16 @@ import { PetForm } from "../PetForm";
 
 export default function NewPetPage() {
   return (
-    <main className="min-h-screen bg-zinc-100">
-      <header className="border-b border-zinc-200 bg-white px-4 py-3">
-        <div className="mx-auto flex max-w-2xl items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-zinc-600 hover:text-zinc-900"
-          >
-            ← Dashboard
-          </Link>
-          <h1 className="text-lg font-semibold text-zinc-900">Add pet</h1>
-        </div>
+    <main className="min-h-screen px-4 py-8">
+      <header className="glass-panel mx-auto flex w-full max-w-3xl items-center gap-4 rounded-full px-4 py-2.5">
+        <Link href="/dashboard" className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
+          Back to dashboard
+        </Link>
+        <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">Add pet profile</h1>
       </header>
 
-      <div className="mx-auto max-w-2xl px-4 py-8">
-        <PetForm
-          mode="create"
-          onSubmit={createPet}
-        />
+      <div className="mx-auto mt-5 w-full max-w-3xl">
+        <PetForm mode="create" onSubmit={createPet} />
       </div>
     </main>
   );

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
@@ -20,10 +20,10 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:bg-emerald-400"
+      className="brand-button brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       disabled={pending}
     >
-      {pending ? "Sending…" : "Send SMS"}
+      {pending ? "Sending alert..." : "Send alert to owner"}
     </button>
   );
 }
@@ -37,13 +37,13 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   const [locationUrl, setLocationUrl] = useState("");
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
 
-  async function handleUseLocation() {
+  function handleUseLocation() {
     if (!("geolocation" in navigator)) {
       setLocationStatus("Geolocation is not supported on this device.");
       return;
     }
 
-    setLocationStatus("Requesting your location…");
+    setLocationStatus("Requesting your location...");
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -53,9 +53,7 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
         setLocationStatus("Location attached to your message.");
       },
       () => {
-        setLocationStatus(
-          "We couldn’t access your location. You can still submit the form without it.",
-        );
+        setLocationStatus("We could not access your location. You can submit without it.");
       },
       {
         enableHighAccuracy: false,
@@ -66,25 +64,19 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
 
   if (state.status === "success") {
     return (
-      <div className="flex flex-col gap-4 rounded-2xl bg-white p-5 text-center shadow-sm">
-        <h2 className="text-xl font-semibold">Thank you for helping!</h2>
-        <p className="text-sm text-zinc-600">
-          Contact {petName}&apos;s owner:
+      <div className="brand-card p-6 text-center">
+        <h2 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">Alert sent</h2>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">
+          Thank you for helping. You can contact {petName}&apos;s owner directly:
         </p>
-        <div className="flex flex-col gap-3">
+        <div className="mt-4 flex flex-col gap-3">
           {state.telLink && (
-            <a
-              href={state.telLink}
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-emerald-600 bg-white px-5 py-3 text-base font-medium text-emerald-600 shadow-sm transition-colors hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
-            >
-              Позвонить
+            <a href={state.telLink} className="brand-button brand-button-secondary border">
+              Call owner
             </a>
           )}
           {state.smsLink && (
-            <a
-              href={state.smsLink}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-            >
+            <a href={state.smsLink} className="brand-button brand-button-primary">
               Send SMS
             </a>
           )}
@@ -94,19 +86,13 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   }
 
   return (
-    <form
-      action={formAction}
-      className="flex flex-col gap-5 rounded-2xl bg-white p-5 shadow-sm"
-    >
+    <form action={formAction} className="brand-card flex flex-col gap-5 p-5 md:p-6">
       <input type="hidden" name="publicId" value={publicId} />
       <input type="hidden" name="finder_location_url" value={locationUrl} />
 
-      <div className="space-y-2">
-        <label
-          htmlFor="finder_message"
-          className="block text-sm font-medium text-zinc-800"
-        >
-          Message to the pet&apos;s owner
+      <div>
+        <label htmlFor="finder_message" className="block text-sm font-semibold text-[var(--ink)]">
+          Message for owner
         </label>
         <textarea
           id="finder_message"
@@ -115,20 +101,16 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
           rows={5}
           value={finderMessage}
           onChange={(e) => setFinderMessage(e.target.value)}
-          className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-0 placeholder:text-zinc-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500"
-          placeholder="Briefly describe where the pet is and how they can contact you."
+          className="brand-input mt-1"
+          placeholder="Share where the pet is and best way to reach you."
         />
-        <p className="text-[11px] text-zinc-500">
-          Please avoid sharing very sensitive personal information. A phone
-          number is usually enough.
+        <p className="mt-1 text-[11px] text-[var(--ink-soft)]">
+          Keep the message practical and short so the owner can act quickly.
         </p>
       </div>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="finder_phone"
-          className="block text-sm font-medium text-zinc-800"
-        >
+      <div>
+        <label htmlFor="finder_phone" className="block text-sm font-semibold text-[var(--ink)]">
           Your phone number (optional)
         </label>
         <input
@@ -138,36 +120,34 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
           inputMode="tel"
           value={finderPhone}
           onChange={(e) => setFinderPhone(e.target.value)}
-          className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-0 placeholder:text-zinc-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500"
-          placeholder="Include if you’d like the owner to call you"
+          className="brand-input mt-1"
+          placeholder="Add a number if you want a callback"
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-muted)] p-3">
         <button
           type="button"
           onClick={handleUseLocation}
-          className="inline-flex w-full items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-medium text-zinc-800 shadow-sm transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className="brand-button brand-button-secondary w-full border"
         >
-          Share my approximate location (optional)
+          Share approximate location (optional)
         </button>
-        {locationStatus && (
-          <p className="text-[11px] text-zinc-500">{locationStatus}</p>
-        )}
+        {locationStatus && <p className="mt-2 text-xs text-[var(--ink-soft)]">{locationStatus}</p>}
         {locationUrl && (
           <a
             href={locationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="wrap-break-word text-[15px] font-semibold text-emerald-700 hover:text-emerald-800 transition-colors"
+            className="mt-1 inline-block text-sm font-semibold text-[var(--brand-strong)] hover:underline"
           >
-            📍 View shared location
+            View shared location
           </a>
         )}
       </div>
 
       {state.status === "error" && state.error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       )}
@@ -176,4 +156,3 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
     </form>
   );
 }
-

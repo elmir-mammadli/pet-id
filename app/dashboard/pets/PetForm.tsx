@@ -1,15 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 import type { Pet } from "@/lib/types/pet";
-import type {
-  CreatePetResult,
-  UpdatePetResult,
-  UploadPhotoResult,
-} from "../actions";
+
+import type { CreatePetResult, UpdatePetResult, UploadPhotoResult } from "../actions";
 import { uploadPetPhoto } from "../actions";
 
 type PetFormProps =
@@ -45,6 +42,7 @@ function getDefaultInput(pet?: Pet): CreatePetInput {
       is_active: true,
     };
   }
+
   return {
     name: pet.name,
     age_years: pet.age_years,
@@ -59,9 +57,7 @@ export function PetForm(props: PetFormProps) {
   const router = useRouter();
   const photoInputRef = useRef<HTMLInputElement>(null);
   const pet = props.mode === "edit" ? props.pet : null;
-  const [input, setInput] = useState<CreatePetInput>(() =>
-    getDefaultInput(pet ?? undefined),
-  );
+  const [input, setInput] = useState<CreatePetInput>(() => getDefaultInput(pet ?? undefined));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -93,27 +89,24 @@ export function PetForm(props: PetFormProps) {
         setLoading(false);
         return;
       }
-      const petId = result.petId;
+
       const file = photoInputRef.current?.files?.[0];
       if (file && file.size > 0) {
         const formData = new FormData();
         formData.set("photo", file);
-        const uploadResult: UploadPhotoResult = await uploadPetPhoto(
-          petId,
-          formData,
-        );
+        const uploadResult: UploadPhotoResult = await uploadPetPhoto(result.petId, formData);
         if (!uploadResult.ok) {
           setError(uploadResult.error);
           setLoading(false);
           return;
         }
       }
+
       router.push("/dashboard");
       router.refresh();
       return;
     }
 
-    // Edit mode
     const file = photoInputRef.current?.files?.[0];
     if (file && file.size > 0) {
       const formData = new FormData();
@@ -125,181 +118,163 @@ export function PetForm(props: PetFormProps) {
         return;
       }
     }
+
     const result = await props.onSubmit(props.pet.id, payload);
-    if (result.ok) {
-      router.push("/dashboard");
-      router.refresh();
+    if (!result.ok) {
+      setError(result.error);
+      setLoading(false);
       return;
     }
-    setError(result.error);
-    setLoading(false);
+
+    router.push("/dashboard");
+    router.refresh();
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm"
-    >
-      <div>
-        <label
-          htmlFor="pet-name"
-          className="block text-sm font-medium text-zinc-800"
-        >
-          Name *
-        </label>
-        <input
-          id="pet-name"
-          type="text"
-          required
-          value={input.name}
-          onChange={(e) => setInput((p) => ({ ...p, name: e.target.value }))}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          placeholder="e.g. Max"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="brand-card flex flex-col gap-5 p-5 md:p-6">
+      <section className="space-y-4">
+        <h2 className="text-lg font-extrabold tracking-tight text-[var(--ink)]">
+          {props.mode === "create" ? "New pet profile" : "Pet profile"}
+        </h2>
 
-      <div className="grid grid-cols-2 gap-4">
         <div>
-          <label
-            htmlFor="pet-age"
-            className="block text-sm font-medium text-zinc-800"
-          >
-            Age (years)
-          </label>
-        <input
-            id="pet-age"
-            type="number"
-            min={0}
-            max={30}
-            value={input.age_years ?? ""}
-            onChange={(e) => {
-              const v = e.target.value;
-              setInput((p) => ({
-                ...p,
-                age_years:
-                  v === ""
-                    ? null
-                    : (Number.isNaN(parseInt(v, 10))
-                        ? null
-                        : parseInt(v, 10)),
-              }));
-            }}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="3"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="pet-breed"
-            className="block text-sm font-medium text-zinc-800"
-          >
-            Breed
+          <label htmlFor="pet-name" className="block text-sm font-semibold text-[var(--ink)]">
+            Name *
           </label>
           <input
-            id="pet-breed"
+            id="pet-name"
             type="text"
-            value={input.breed}
-            onChange={(e) => setInput((p) => ({ ...p, breed: e.target.value }))}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="Labrador"
+            required
+            value={input.name}
+            onChange={(e) => setInput((p) => ({ ...p, name: e.target.value }))}
+            className="brand-input mt-1"
+            placeholder="e.g. Max"
           />
         </div>
-      </div>
 
-      <div>
-        <label
-          htmlFor="pet-photo-file"
-          className="block text-sm font-medium text-zinc-800"
-        >
-          Photo
-        </label>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="pet-age" className="block text-sm font-semibold text-[var(--ink)]">
+              Age (years)
+            </label>
+            <input
+              id="pet-age"
+              type="number"
+              min={0}
+              max={30}
+              value={input.age_years ?? ""}
+              onChange={(e) => {
+                const v = e.target.value;
+                setInput((p) => ({
+                  ...p,
+                  age_years:
+                    v === "" ? null : Number.isNaN(parseInt(v, 10)) ? null : parseInt(v, 10),
+                }));
+              }}
+              className="brand-input mt-1"
+              placeholder="3"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="pet-breed" className="block text-sm font-semibold text-[var(--ink)]">
+              Breed
+            </label>
+            <input
+              id="pet-breed"
+              type="text"
+              value={input.breed}
+              onChange={(e) => setInput((p) => ({ ...p, breed: e.target.value }))}
+              className="brand-input mt-1"
+              placeholder="Labrador"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-3 rounded-xl border border-[var(--line)] bg-[var(--surface-muted)] p-4">
+        <h3 className="text-sm font-semibold text-[var(--ink)]">Photo</h3>
+
         {((pet && pet.photo_path) || input.photo_path) && (
-          <div className="mt-2 flex items-center gap-3">
-            <div className="h-16 w-16 overflow-hidden rounded-xl bg-zinc-100">
+          <div className="flex items-center gap-3">
+            <div className="h-16 w-16 overflow-hidden rounded-xl bg-[#e8ede5]">
               <Image
                 src={(pet && pet.photo_path) || input.photo_path}
-                alt={pet?.name ?? (input.name || "Pet photo")}
+                alt={pet?.name || input.name || "Pet photo"}
                 width={64}
                 height={64}
                 className="h-full w-full object-cover"
               />
             </div>
-            <p className="text-xs text-zinc-500">Current photo preview</p>
+            <p className="text-xs text-[var(--ink-soft)]">Current preview</p>
           </div>
         )}
+
         <input
           ref={photoInputRef}
           id="pet-photo-file"
           type="file"
           name="photo"
           accept="image/jpeg,image/png,image/webp,image/gif"
-          className="mt-3 w-full text-sm text-zinc-600 border border-zinc-400 file:rounded-none bg-zinc-50 rounded-xl file:mr-3 file:cursor-pointer file:border-0 file:bg-emerald-200  file:px-4 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
+          className="brand-input"
         />
-        <p className="mt-1 ml-1 text-xs text-zinc-500">
-          JPEG, PNG, WebP or GIF, max 3 MB (Optional)
-        </p>
-        <p className="mt-3 ml-1 text-xs text-zinc-500">
-          Or paste a link:
-        </p>
-        <input
-          id="pet-photo-url"
-          type="url"
-          value={input.photo_path}
-          onChange={(e) =>
-            setInput((p) => ({ ...p, photo_path: e.target.value }))
-          }
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          placeholder="https://..."
-        />
-      </div>
+        <p className="text-xs text-[var(--ink-soft)]">JPEG, PNG, WebP or GIF, max 3 MB.</p>
 
-      <div>
-        <label
-          htmlFor="pet-notes"
-          className="block text-sm font-medium text-zinc-800"
-        >
-          Notes (for finders)
+        <div>
+          <label htmlFor="pet-photo-url" className="block text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]">
+            Or paste image URL
+          </label>
+          <input
+            id="pet-photo-url"
+            type="url"
+            value={input.photo_path}
+            onChange={(e) => setInput((p) => ({ ...p, photo_path: e.target.value }))}
+            className="brand-input mt-1"
+            placeholder="https://..."
+          />
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <label htmlFor="pet-notes" className="block text-sm font-semibold text-[var(--ink)]">
+          Notes (visible to finders)
         </label>
         <textarea
           id="pet-notes"
           rows={3}
           value={input.notes}
           onChange={(e) => setInput((p) => ({ ...p, notes: e.target.value }))}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          placeholder="e.g. Microchipped, friendly with kids"
+          className="brand-input"
+          placeholder="e.g. Friendly, microchipped, allergic to chicken"
         />
-      </div>
 
-      <label className="flex cursor-pointer items-center gap-2">
-        <input
-          type="checkbox"
-          checked={input.is_active}
-          onChange={(e) =>
-            setInput((p) => ({ ...p, is_active: e.target.checked }))
-          }
-          className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
-        />
-        <span className="text-sm font-medium text-zinc-800">
-          Tag is active (finders can report finding this pet)
-        </span>
-      </label>
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={input.is_active}
+            onChange={(e) => setInput((p) => ({ ...p, is_active: e.target.checked }))}
+            className="h-4 w-4 rounded border-[#b9c6b8] text-[var(--brand)] focus:ring-[var(--focus)]"
+          />
+          <span className="text-sm font-medium text-[var(--ink)]">Tag is active and visible to finders</span>
+        </label>
+      </section>
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-emerald-400"
+          className="brand-button brand-button-primary w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading
             ? props.mode === "create"
-              ? "Adding…"
-              : "Saving…"
+              ? "Adding pet..."
+              : "Saving changes..."
             : props.mode === "create"
               ? "Add pet"
               : "Save changes"}
@@ -307,7 +282,7 @@ export function PetForm(props: PetFormProps) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-full border border-zinc-200 bg-white px-4 py-3 text-base font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+          className="brand-button brand-button-secondary w-full border sm:w-auto"
         >
           Cancel
         </button>

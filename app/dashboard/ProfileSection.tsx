@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import type { ProfileData } from "./actions";
 import { updateProfile, type UpdateProfileResult } from "./actions";
 
@@ -18,26 +19,20 @@ export function ProfileSection({ profile }: Props) {
     e.preventDefault();
     setResult(null);
     setLoading(true);
-    const res = await updateProfile(
-      displayName.trim() || null,
-      phone.trim() || null,
-    );
+    const res = await updateProfile(displayName.trim() || null, phone.trim() || null);
     setResult(res);
     setLoading(false);
   }
 
   return (
-    <section className="mb-8 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-      <h2 className="mb-1 text-lg font-semibold text-zinc-900">About you</h2>
-      <p className="mb-4 text-sm text-zinc-500">
-        Name and phone are used so finders can text you when they find your pet.
+    <section className="brand-card mb-7 p-5">
+      <h2 className="mb-1 text-lg font-bold text-[var(--ink)]">Owner profile</h2>
+      <p className="mb-4 text-sm text-[var(--ink-soft)]">
+        This information is used when someone reports finding your pet.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label
-            htmlFor="profile-display-name"
-            className="block text-sm font-medium text-zinc-800"
-          >
+          <label htmlFor="profile-display-name" className="block text-sm font-semibold text-[var(--ink)]">
             Your name
           </label>
           <input
@@ -45,15 +40,12 @@ export function ProfileSection({ profile }: Props) {
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="brand-input mt-1"
             placeholder="e.g. Alex"
           />
         </div>
         <div>
-          <label
-            htmlFor="profile-phone"
-            className="block text-sm font-medium text-zinc-800"
-          >
+          <label htmlFor="profile-phone" className="block text-sm font-semibold text-[var(--ink)]">
             Your phone number
           </label>
           <input
@@ -62,26 +54,26 @@ export function ProfileSection({ profile }: Props) {
             inputMode="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="e.g. +7 900 123 45 67"
+            className="brand-input mt-1"
+            placeholder="e.g. +1 555 123 4567"
           />
         </div>
         {result && !result.ok && (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {result.error}
           </p>
         )}
         {result?.ok && (
-          <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            Saved.
+          <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+            Profile saved.
           </p>
         )}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="brand-button brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? "Saving…" : "Save"}
+          {loading ? "Saving..." : "Save profile"}
         </button>
       </form>
     </section>

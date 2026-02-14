@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 import type { CreatePetInput } from "@/app/dashboard/actions";
 import { uploadPetPhoto } from "@/app/dashboard/actions";
@@ -81,69 +81,69 @@ export function ClaimTagForm({ activationToken }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm"
-    >
-      <div>
-        <label htmlFor="claim-name" className="block text-sm font-medium text-zinc-800">
-          Pet name *
-        </label>
-        <input
-          id="claim-name"
-          type="text"
-          required
-          value={input.name}
-          onChange={(e) => setInput((p) => ({ ...p, name: e.target.value }))}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          placeholder="e.g. Max"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="brand-card flex flex-col gap-5 p-5 md:p-6">
+      <section className="space-y-4">
+        <h2 className="text-lg font-extrabold tracking-tight text-[var(--ink)]">Pet details</h2>
 
-      <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="claim-age" className="block text-sm font-medium text-zinc-800">
-            Age (years)
+          <label htmlFor="claim-name" className="block text-sm font-semibold text-[var(--ink)]">
+            Pet name *
           </label>
           <input
-            id="claim-age"
-            type="number"
-            min={0}
-            max={30}
-            value={input.age_years ?? ""}
-            onChange={(e) => {
-              const v = e.target.value;
-              setInput((p) => ({
-                ...p,
-                age_years: v === "" ? null : parseInt(v, 10) || null,
-              }));
-            }}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="3"
-          />
-        </div>
-        <div>
-          <label htmlFor="claim-breed" className="block text-sm font-medium text-zinc-800">
-            Breed
-          </label>
-          <input
-            id="claim-breed"
+            id="claim-name"
             type="text"
-            value={input.breed ?? ""}
-            onChange={(e) => setInput((p) => ({ ...p, breed: e.target.value }))}
-            className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="Labrador"
+            required
+            value={input.name}
+            onChange={(e) => setInput((p) => ({ ...p, name: e.target.value }))}
+            className="brand-input mt-1"
+            placeholder="e.g. Max"
           />
         </div>
-      </div>
 
-      <div>
-        <label htmlFor="claim-photo-file" className="block text-sm font-medium text-zinc-800">
-          Photo
-        </label>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="claim-age" className="block text-sm font-semibold text-[var(--ink)]">
+              Age (years)
+            </label>
+            <input
+              id="claim-age"
+              type="number"
+              min={0}
+              max={30}
+              value={input.age_years ?? ""}
+              onChange={(e) => {
+                const v = e.target.value;
+                setInput((p) => ({
+                  ...p,
+                  age_years: v === "" ? null : parseInt(v, 10) || null,
+                }));
+              }}
+              className="brand-input mt-1"
+              placeholder="3"
+            />
+          </div>
+          <div>
+            <label htmlFor="claim-breed" className="block text-sm font-semibold text-[var(--ink)]">
+              Breed
+            </label>
+            <input
+              id="claim-breed"
+              type="text"
+              value={input.breed ?? ""}
+              onChange={(e) => setInput((p) => ({ ...p, breed: e.target.value }))}
+              className="brand-input mt-1"
+              placeholder="Labrador"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-3 rounded-xl border border-[var(--line)] bg-[var(--surface-muted)] p-4">
+        <h3 className="text-sm font-semibold text-[var(--ink)]">Pet photo</h3>
+
         {input.photo_path && (
-          <div className="mt-2 flex items-center gap-3">
-            <div className="h-16 w-16 overflow-hidden rounded-xl bg-zinc-100">
+          <div className="flex items-center gap-3">
+            <div className="h-16 w-16 overflow-hidden rounded-xl bg-[#e8ede5]">
               <Image
                 src={input.photo_path}
                 alt={input.name || "Pet"}
@@ -152,91 +152,97 @@ export function ClaimTagForm({ activationToken }: Props) {
                 className="h-full w-full object-cover"
               />
             </div>
+            <p className="text-xs text-[var(--ink-soft)]">Current URL preview</p>
           </div>
         )}
+
         <input
           ref={photoInputRef}
           id="claim-photo-file"
           type="file"
           name="photo"
           accept="image/jpeg,image/png,image/webp,image/gif"
-          className="mt-2 w-full text-sm text-zinc-600 file:mr-3 file:rounded-full file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
+          className="brand-input"
         />
-        <p className="mt-1 text-xs text-zinc-500">Or paste URL:</p>
-        <input
-          id="claim-photo-url"
-          type="url"
-          value={input.photo_path ?? ""}
-          onChange={(e) => setInput((p) => ({ ...p, photo_path: e.target.value }))}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-          placeholder="https://..."
-        />
-      </div>
+        <p className="text-xs text-[var(--ink-soft)]">JPEG, PNG, WebP, or GIF. Max 3 MB.</p>
 
-      <div>
-        <label htmlFor="claim-notes" className="block text-sm font-medium text-zinc-800">
-          Notes (for finders)
+        <div>
+          <label htmlFor="claim-photo-url" className="block text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]">
+            Or paste image URL
+          </label>
+          <input
+            id="claim-photo-url"
+            type="url"
+            value={input.photo_path ?? ""}
+            onChange={(e) => setInput((p) => ({ ...p, photo_path: e.target.value }))}
+            className="brand-input mt-1"
+            placeholder="https://..."
+          />
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <label htmlFor="claim-notes" className="block text-sm font-semibold text-[var(--ink)]">
+          Notes for finders
         </label>
         <textarea
           id="claim-notes"
           rows={3}
           value={input.notes ?? ""}
           onChange={(e) => setInput((p) => ({ ...p, notes: e.target.value }))}
-          className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-          placeholder="e.g. Microchipped, friendly with kids"
+          className="brand-input"
+          placeholder="e.g. Friendly, microchipped, needs medication"
         />
-      </div>
 
-      <label className="flex cursor-pointer items-center gap-2">
-        <input
-          type="checkbox"
-          checked={input.is_active}
-          onChange={(e) => setInput((p) => ({ ...p, is_active: e.target.checked }))}
-          className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
-        />
-        <span className="text-sm font-medium text-zinc-800">
-          Tag is active (finders can report finding this pet)
-        </span>
-      </label>
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={input.is_active}
+            onChange={(e) => setInput((p) => ({ ...p, is_active: e.target.checked }))}
+            className="h-4 w-4 rounded border-[#b9c6b8] text-[var(--brand)] focus:ring-[var(--focus)]"
+          />
+          <span className="text-sm font-medium text-[var(--ink)]">
+            Activate tag immediately after registration
+          </span>
+        </label>
+      </section>
 
-      <div className="border-t border-zinc-200 pt-4">
-        <h3 className="mb-3 text-sm font-semibold text-zinc-800">About you</h3>
-        <p className="mb-3 text-xs text-zinc-500">
-          So finders can text you directly when they find your pet (optional).
-        </p>
-        <div className="space-y-3">
-          <div>
-            <label htmlFor="claim-owner-name" className="block text-sm font-medium text-zinc-800">
-              Your name
-            </label>
-            <input
-              id="claim-owner-name"
-              type="text"
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              placeholder="e.g. Alex"
-            />
-          </div>
-          <div>
-            <label htmlFor="claim-owner-phone" className="block text-sm font-medium text-zinc-800">
-              Your phone number
-            </label>
-            <input
-              id="claim-owner-phone"
-              type="tel"
-              inputMode="tel"
-              value={ownerPhone}
-              onChange={(e) => setOwnerPhone(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-zinc-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              placeholder="e.g. +7 900 123 45 67"
-            />
-          </div>
+      <section className="space-y-4 border-t border-[var(--line)] pt-5">
+        <h3 className="text-lg font-extrabold tracking-tight text-[var(--ink)]">Owner contact (optional)</h3>
+        <p className="text-sm text-[var(--ink-soft)]">This helps finders contact you faster when your pet is found.</p>
+
+        <div>
+          <label htmlFor="claim-owner-name" className="block text-sm font-semibold text-[var(--ink)]">
+            Your name
+          </label>
+          <input
+            id="claim-owner-name"
+            type="text"
+            value={ownerName}
+            onChange={(e) => setOwnerName(e.target.value)}
+            className="brand-input mt-1"
+            placeholder="e.g. Alex"
+          />
         </div>
-      </div>
+
+        <div>
+          <label htmlFor="claim-owner-phone" className="block text-sm font-semibold text-[var(--ink)]">
+            Your phone number
+          </label>
+          <input
+            id="claim-owner-phone"
+            type="tel"
+            inputMode="tel"
+            value={ownerPhone}
+            onChange={(e) => setOwnerPhone(e.target.value)}
+            className="brand-input mt-1"
+            placeholder="e.g. +1 555 123 4567"
+          />
+        </div>
+      </section>
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -244,9 +250,9 @@ export function ClaimTagForm({ activationToken }: Props) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+        className="brand-button brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Registering…" : "Register this tag"}
+        {loading ? "Registering tag..." : "Register this tag"}
       </button>
     </form>
   );

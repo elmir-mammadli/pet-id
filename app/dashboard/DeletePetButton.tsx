@@ -15,17 +15,17 @@ export function DeletePetButton({ petId, petName }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
-    if (
-      !confirm(`Remove ${petName}? This cannot be undone. Their tag link will stop working.`)
-    ) {
+    if (!confirm(`Remove ${petName}? This cannot be undone. Their tag link will stop working.`)) {
       return;
     }
+
     setLoading(true);
     const result = await deletePet(petId);
     if (result.ok) {
       router.refresh();
       return;
     }
+
     alert(result.error);
     setLoading(false);
   }
@@ -35,9 +35,9 @@ export function DeletePetButton({ petId, petName }: Props) {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
+      className="text-sm font-semibold text-red-600 hover:underline disabled:opacity-50"
     >
-      {loading ? "Removing…" : "Remove"}
+      {loading ? "Removing..." : "Remove"}
     </button>
   );
 }

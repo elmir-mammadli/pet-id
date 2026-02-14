@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
 
-import { createSupabaseAnonServerClient } from "@/lib/supabase/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAnonServerClient, createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { ClaimTagForm } from "./ClaimTagForm";
 
@@ -10,11 +10,22 @@ type Props = {
   params: Promise<{ token: string }>;
 };
 
+function CenterState({ title, description, children }: { title: string; description: string; children?: React.ReactNode }) {
+  return (
+    <main className="min-h-screen px-4 py-14">
+      <div className="brand-card mx-auto w-full max-w-xl p-7 text-center">
+        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">{title}</h1>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">{description}</p>
+        {children}
+      </div>
+    </main>
+  );
+}
+
 export default async function ActivatePage({ params }: Props) {
   const { token } = await params;
   const anon = createSupabaseAnonServerClient();
 
-  // Resolve active tag → redirect to public pet page
   const { data: redirectRow } = await anon
     .from("tag_redirects")
     .select("public_id")
@@ -25,7 +36,6 @@ export default async function ActivatePage({ params }: Props) {
     redirect(`/p/${redirectRow.public_id}`);
   }
 
-  // Tag might be unclaimed or invalid
   const { data: tag } = await anon
     .from("tags")
     .select("id, activation_token, status")
@@ -34,22 +44,14 @@ export default async function ActivatePage({ params }: Props) {
 
   if (!tag) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-100 px-4 py-10">
-        <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
-          <h1 className="text-xl font-semibold text-zinc-900">
-            Invalid or unknown tag
-          </h1>
-          <p className="mt-2 text-sm text-zinc-600">
-            This activation link is not recognized. If you found this pet, please
-            contact a local shelter or vet.
-          </p>
-        </div>
-      </main>
+      <CenterState
+        title="Invalid or unknown tag"
+        description="This activation link is not recognized. If you found this pet, please contact a nearby shelter or veterinary clinic."
+      />
     );
   }
 
   if (tag.status !== "unclaimed") {
-    // Should have been redirected; if not, tag might be in inconsistent state
     notFound();
   }
 
@@ -60,48 +62,44 @@ export default async function ActivatePage({ params }: Props) {
 
   if (!user) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-100 px-4 py-10">
-        <div className="w-full max-w-md space-y-6">
-          <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-            <h1 className="text-xl font-semibold text-zinc-900">
-              This tag has not been registered yet
-            </h1>
-            <p className="mt-2 text-sm text-zinc-600">
-              Log in or create an account to register this Pet ID tag and add your
-              pet&apos;s profile.
-            </p>
-            <div className="mt-6 flex flex-col gap-3">
-              <Link
-                href={`/login?next=${encodeURIComponent(`/activate/${token}`)}`}
-                className="inline-flex w-full justify-center rounded-full bg-emerald-600 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-700"
-              >
-                Log in to register this tag
-              </Link>
-              <Link
-                href={`/signup?next=${encodeURIComponent(`/activate/${token}`)}`}
-                className="inline-flex w-full justify-center rounded-full border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-800 hover:bg-zinc-50"
-              >
-                Create account
-              </Link>
-            </div>
-          </div>
+      <CenterState
+        title="This tag has not been registered yet"
+        description="Log in or create an account to claim this Pet ID tag and publish your pet's profile."
+      >
+        <div className="mt-6 flex flex-col gap-3">
+          <Link
+            href={`/login?next=${encodeURIComponent(`/activate/${token}`)}`}
+            className="brand-button brand-button-primary w-full"
+          >
+            Log in to register this tag
+          </Link>
+          <Link
+            href={`/signup?next=${encodeURIComponent(`/activate/${token}`)}`}
+            className="brand-button brand-button-secondary w-full border"
+          >
+            Create account
+          </Link>
         </div>
-      </main>
+      </CenterState>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col bg-zinc-100 px-4 py-10">
-      <div className="mx-auto w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold text-zinc-900">
-            Register your Pet ID tag
-          </h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            Add your pet&apos;s details. After this, anyone who taps the tag will
-            see the profile and can report finding your pet.
+    <main className="relative min-h-screen overflow-x-clip px-4 py-10">
+      <div className="pointer-events-none absolute inset-0 soft-grid opacity-20" />
+
+      <div className="relative mx-auto flex w-full max-w-3xl flex-col gap-5">
+        <header className="brand-card-muted p-6">
+          <span className="brand-pill">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Tag activation
+          </span>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--ink)]">Register your Pet ID tag</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--ink-soft)]">
+            Add your pet details once. After activation, anyone who scans the tag sees a clear public profile and can notify you immediately.
           </p>
-        </div>
+        </header>
+
         <ClaimTagForm activationToken={token} />
       </div>
     </main>

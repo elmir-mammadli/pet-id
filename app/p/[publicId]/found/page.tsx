@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import { HeartHandshake, ShieldCheck } from "lucide-react";
 
 import {
   createSupabaseAnonServerClient,
@@ -11,16 +13,12 @@ type PageProps = {
   params: Promise<{ publicId: string }>;
 };
 
-async function getPublicPetProfile(
-  publicId: string,
-): Promise<PublicPetProfile | null> {
+async function getPublicPetProfile(publicId: string): Promise<PublicPetProfile | null> {
   const supabase = createSupabaseAnonServerClient();
 
   const { data, error } = await supabase
     .from("public_pet_profiles")
-    .select(
-      "public_id, name, age_years, breed, photo_path, notes, is_active",
-    )
+    .select("public_id, name, age_years, breed, photo_path, notes, is_active")
     .eq("public_id", publicId)
     .maybeSingle();
 
@@ -32,97 +30,117 @@ async function getPublicPetProfile(
   return data;
 }
 
+function buildSubtitle(pet: PublicPetProfile): string[] {
+  const subtitleParts: string[] = [];
+  if (pet.breed) subtitleParts.push(pet.breed);
+  if (typeof pet.age_years === "number") {
+    subtitleParts.push(pet.age_years === 1 ? "1 year old" : `${pet.age_years} years old`);
+  }
+  return subtitleParts;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { publicId } = await params;
+  const pet = await getPublicPetProfile(publicId);
+
+  if (!pet || !pet.is_active) {
+    return {
+      title: "Report Found Pet",
+      description: "Use this page to report a found pet to the owner.",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  return {
+    title: `Report found ${pet.name}`,
+    description: `Send a direct alert to ${pet.name}'s owner through Pet ID.`,
+    robots: { index: false, follow: false },
+  };
+}
+
+function EmptyState({ title, description }: { title: string; description: string }) {
+  return (
+    <main className="min-h-screen px-4 py-12 text-[var(--ink)]">
+      <div className="brand-card mx-auto max-w-lg p-6 text-center">
+        <h1 className="text-xl font-bold tracking-tight">{title}</h1>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">{description}</p>
+      </div>
+    </main>
+  );
+}
+
 export default async function FoundPage({ params }: PageProps) {
   const { publicId } = await params;
   const pet = await getPublicPetProfile(publicId);
 
   if (!pet) {
     return (
-      <main className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-900">
-        <div className="mx-auto flex max-w-md flex-col gap-4">
-          <h1 className="text-center text-xl font-semibold">
-            This tag is not active or not found
-          </h1>
-          <p className="text-center text-sm text-zinc-600">
-            Please double-check the URL printed on the pet&apos;s tag.
-          </p>
-        </div>
-      </main>
+      <EmptyState
+        title="Tag not found"
+        description="This pet link is not active right now. Please verify the URL and try again."
+      />
     );
   }
 
   if (!pet.is_active) {
     return (
-      <main className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-900">
-        <div className="mx-auto flex max-w-md flex-col gap-4">
-          <h1 className="text-center text-xl font-semibold">
-            This tag is currently inactive
-          </h1>
-          <p className="text-center text-sm text-zinc-600">
-            The pet&apos;s owner has temporarily deactivated this tag.
-          </p>
-        </div>
-      </main>
+      <EmptyState
+        title="Tag is currently inactive"
+        description="The owner has temporarily paused this tag."
+      />
     );
   }
 
-  const subtitleParts: string[] = [];
-  if (pet.breed) subtitleParts.push(pet.breed);
-  if (typeof pet.age_years === "number") {
-    subtitleParts.push(
-      pet.age_years === 1 ? "1 year old" : `${pet.age_years} years old`,
-    );
-  }
+  const subtitleParts = buildSubtitle(pet);
 
   return (
-    <main className="flex min-h-screen bg-zinc-100 px-4 py-8 text-zinc-900">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-        <header className="pt-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Help {pet.name} get home
-          </h1>
-          {subtitleParts.length > 0 && (
-            <p className="mt-1 text-sm text-zinc-600">
-              {subtitleParts.join(" • ")}
-            </p>
-          )}
-        </header>
+    <main className="relative min-h-screen overflow-x-clip px-4 py-8 md:py-10">
+      <div className="pointer-events-none absolute inset-0 soft-grid opacity-20" />
 
-        <section className="overflow-hidden rounded-2xl bg-white shadow-sm">
-          {pet.photo_path ? (
-            <div className="relative h-48 w-full bg-zinc-200">
-              <Image
-                src={pet.photo_path}
-                alt={pet.name}
-                fill
-                sizes="100vw"
-                className="object-cover"
-                priority
-              />
-            </div>
-          ) : null}
+      <div className="relative mx-auto flex w-full max-w-2xl flex-col gap-5">
+        <header className="brand-card overflow-hidden">
+          <div className="grid gap-0 md:grid-cols-[0.44fr_0.56fr]">
+            {pet.photo_path ? (
+              <div className="relative h-56 bg-[#e4ede1] md:h-full">
+                <Image
+                  src={pet.photo_path}
+                  alt={`${pet.name} profile photo`}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 360px"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="flex h-48 items-center justify-center bg-[#eef2ea] text-sm text-[var(--ink-soft)]">
+                No photo available
+              </div>
+            )}
 
-          <div className="flex flex-col gap-4 p-5">
-            <div className="space-y-2 text-sm">
-              <p className="font-medium">
-                You&apos;re doing something kind 💚
+            <div className="p-5 md:p-6">
+              <span className="brand-pill">
+                <HeartHandshake className="h-3.5 w-3.5" />
+                Thank you for helping
+              </span>
+              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--ink)]">Help {pet.name} get home</h1>
+              {subtitleParts.length > 0 && (
+                <p className="mt-1 text-sm text-[var(--ink-soft)]">{subtitleParts.join(" • ")}</p>
+              )}
+              <p className="mt-3 text-sm leading-relaxed text-[var(--ink-soft)]">
+                Fill out this short form. Your alert goes directly to the owner so they can contact you quickly.
               </p>
-              <p className="text-zinc-600">
-                Fill out the short form below. We&apos;ll send your message to
-                {` ${pet.name}`}&apos;s human right away.
-              </p>
+              <div className="mt-4 rounded-xl border border-[var(--line)] bg-[var(--surface-muted)] p-3">
+                <p className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--ink-soft)]">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[var(--brand-strong)]" />
+                  Only the owner can view your submitted details.
+                </p>
+              </div>
             </div>
           </div>
-        </section>
+        </header>
 
         <FoundForm publicId={pet.public_id} petName={pet.name} />
-
-        <p className="pb-4 text-center text-[11px] text-zinc-500">
-          We don&apos;t publicly share your data. Only the pet&apos;s owner
-          will see this alert.
-        </p>
       </div>
     </main>
   );
 }
-
