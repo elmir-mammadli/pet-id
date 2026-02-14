@@ -23,7 +23,7 @@ function SubmitButton() {
       className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:bg-emerald-400"
       disabled={pending}
     >
-      {pending ? "Sending…" : "Send message & text the owner"}
+      {pending ? "Sending…" : "Send SMS"}
     </button>
   );
 }
@@ -69,17 +69,26 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
       <div className="flex flex-col gap-4 rounded-2xl bg-white p-5 text-center shadow-sm">
         <h2 className="text-xl font-semibold">Thank you for helping!</h2>
         <p className="text-sm text-zinc-600">
-          Your message has been sent to {petName}&apos;s human. They&apos;ll
-          reach out to you as soon as possible.
+          Contact {petName}&apos;s owner:
         </p>
-        {state.smsLink && (
-          <a
-            href={state.smsLink}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-          >
-            Text the owner
-          </a>
-        )}
+        <div className="flex flex-col gap-3">
+          {state.telLink && (
+            <a
+              href={state.telLink}
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-emerald-600 bg-white px-5 py-3 text-base font-medium text-emerald-600 shadow-sm transition-colors hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+            >
+              Позвонить
+            </a>
+          )}
+          {state.smsLink && (
+            <a
+              href={state.smsLink}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            >
+              Send SMS
+            </a>
+          )}
+        </div>
       </div>
     );
   }

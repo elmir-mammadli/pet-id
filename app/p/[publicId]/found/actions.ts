@@ -11,7 +11,9 @@ import {
 export type FoundFormState = {
   status: "idle" | "submitting" | "success" | "error";
   error?: string;
-  /** When owner has phone, link to open SMS app with pre-filled message. */
+  /** When owner has phone: open dialer. */
+  telLink?: string | null;
+  /** When owner has phone: open SMS app with pre-filled message. */
   smsLink?: string | null;
 };
 
@@ -152,7 +154,8 @@ export async function submitFoundForm(
     secure: true,
   });
 
-  // Собираем SMS-ссылку для finder'а, если у владельца указан телефон.
+  // Ссылки для звонка и SMS, если у владельца указан телефон.
+  let telLink: string | null = null;
   let smsLink: string | null = null;
   const { data: ownerProfile } = await serviceClient
     .from("profiles")
@@ -162,6 +165,10 @@ export async function submitFoundForm(
 
   const ownerPhone = ownerProfile?.phone?.trim();
   if (ownerPhone) {
+    const normalized = ownerPhone.replace(/\D/g, "");
+    const smsPhone = normalized ? `+${normalized}` : ownerPhone;
+    telLink = `tel:${smsPhone}`;
+
     const ownerName = ownerProfile?.display_name?.trim() || "there";
     const petInfo =
       pet.age_years != null && pet.breed?.trim()
@@ -176,21 +183,21 @@ export async function submitFoundForm(
       : "Not shared";
     const contactStr = finderPhone
       ? finderPhone
-      : "See Pet ID dashboard for my message";
+      : "";
     const body = [
-      `Hi ${ownerName}! Someone found ${pet.name}${petInfo}.`,
+      `Hi ${ownerName}! Your pet ${pet.name}${petInfo} was found.`,
+      "",
+      `Location: ${locationStr}.`,
+      `Contact: ${contactStr}.`,
       "",
       finderMessage,
-      "",
-      `Location: ${locationStr}. Contact: ${contactStr}.`,
     ].join("\n");
-    const normalized = ownerPhone.replace(/\D/g, "");
-    const smsPhone = normalized ? `+${normalized}` : ownerPhone;
     smsLink = `sms:${smsPhone}?body=${encodeURIComponent(body)}`;
   }
 
   return {
     status: "success",
+    telLink,
     smsLink,
   };
 }
