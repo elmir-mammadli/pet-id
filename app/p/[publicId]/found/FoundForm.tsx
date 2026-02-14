@@ -159,7 +159,7 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
             href={locationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="wrap-break-word text-[15px] font-semibold text-emerald-700 underline hover:text-emerald-800 transition-colors"
+            className="wrap-break-word text-[15px] font-semibold text-emerald-700 hover:text-emerald-800 transition-colors"
           >
             📍 View shared location
           </a>
