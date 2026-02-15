@@ -37,7 +37,13 @@ export default async function DashboardPage() {
     <main className="min-h-screen px-4 py-6 sm:py-8">
       <header className="glass-panel mx-auto flex w-full max-w-3xl items-center justify-between rounded-full px-4 py-2.5">
         <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">Pet ID Dashboard</h1>
-        <SignOutButton />
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard/alerts" className="brand-button brand-button-secondary border px-4 py-2 text-sm">
+            <span className="hidden sm:inline">Alerts inbox</span>
+            <span className="inline sm:hidden">Alerts</span>
+          </Link>
+          <SignOutButton />
+        </div>
       </header>
 
       <div className="mx-auto mt-5 w-full max-w-3xl">
