@@ -1,5 +1,6 @@
 'use server';
 
+import { createHash, randomUUID } from "crypto";
 import { cookies, headers } from "next/headers";
 
 import {
@@ -18,10 +19,79 @@ export type FoundFormState = {
 };
 
 const MAX_MESSAGE_LENGTH = 1000;
+const MIN_MESSAGE_LENGTH = 8;
+const MAX_LINKS_IN_MESSAGE = 2;
 
-// Простая защита от частых отправок: не чаще одного раза в 60 секунд с одного браузера.
+// Browser-level cooldown.
 const RATE_LIMIT_COOKIE = "finder_last_alert_at";
-const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_WINDOW_MS = 120_000;
+const FINDER_ID_COOKIE = "finder_id";
+
+// In-process abuse controls (best effort; complements cookie + DB checks).
+const MEMORY_WINDOW_MS = 10 * 60_000;
+const MEMORY_LIMIT_PER_FINGERPRINT = 8;
+const MEMORY_LIMIT_PER_FINGERPRINT_TAG = 4;
+const MEMORY_LIMIT_PER_TAG = 30;
+const hitMap = new Map<string, number[]>();
+
+function hashValue(input: string) {
+  return createHash("sha256").update(input).digest("hex").slice(0, 24);
+}
+
+function cleanHits(now: number) {
+  for (const [key, hits] of hitMap.entries()) {
+    const filtered = hits.filter((ts) => now - ts <= MEMORY_WINDOW_MS);
+    if (filtered.length === 0) {
+      hitMap.delete(key);
+      continue;
+    }
+    hitMap.set(key, filtered);
+  }
+}
+
+function consumeHit(key: string, now: number, limit: number): boolean {
+  const existing = hitMap.get(key) ?? [];
+  const recent = existing.filter((ts) => now - ts <= MEMORY_WINDOW_MS);
+  if (recent.length >= limit) {
+    hitMap.set(key, recent);
+    return false;
+  }
+  recent.push(now);
+  hitMap.set(key, recent);
+  return true;
+}
+
+function normalizeMessage(message: string): string {
+  return message.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function normalizePhone(phone: string): string {
+  return phone.replace(/\D/g, "");
+}
+
+function getClientIp(headerStore: Headers): string {
+  const forwarded = headerStore.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  return headerStore.get("x-real-ip") ?? "unknown";
+}
+
+function isValidLocationUrl(urlValue: string): boolean {
+  if (!urlValue) return true;
+  try {
+    const url = new URL(urlValue);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname.toLowerCase();
+    return (
+      host.includes("google.com") ||
+      host.includes("maps.app.goo.gl") ||
+      host.includes("maps.google")
+    );
+  } catch {
+    return false;
+  }
+}
 
 async function getPetByPublicId(
   publicId: string,
@@ -51,9 +121,16 @@ export async function submitFoundForm(
   const publicId = String(formData.get("publicId") ?? "").trim();
   const finderMessage = String(formData.get("finder_message") ?? "").trim();
   const finderPhone = String(formData.get("finder_phone") ?? "").trim();
+  const honeypot = String(formData.get("website") ?? "").trim();
+  const renderedAtRaw = String(formData.get("form_rendered_at") ?? "").trim();
   const finderLocationUrl = String(
     formData.get("finder_location_url") ?? "",
   ).trim();
+
+  // Honeypot trap for simple bots.
+  if (honeypot) {
+    return { status: "success", telLink: null, smsLink: null };
+  }
 
   if (!publicId) {
     return {
@@ -68,6 +145,12 @@ export async function submitFoundForm(
       error: "Please enter a short message for the pet's owner.",
     };
   }
+  if (finderMessage.length < MIN_MESSAGE_LENGTH) {
+    return {
+      status: "error",
+      error: "Please add a bit more detail so the owner can help quickly.",
+    };
+  }
 
   if (finderMessage.length > MAX_MESSAGE_LENGTH) {
     return {
@@ -75,11 +158,49 @@ export async function submitFoundForm(
       error: "Your message is a bit too long. Please shorten it.",
     };
   }
+  if ((finderMessage.match(/https?:\/\//gi)?.length ?? 0) > MAX_LINKS_IN_MESSAGE) {
+    return {
+      status: "error",
+      error: "Please avoid adding multiple links in the message.",
+    };
+  }
+  if (/(.)\1{9,}/.test(finderMessage)) {
+    return {
+      status: "error",
+      error: "Your message looks invalid. Please edit and try again.",
+    };
+  }
+  if (!isValidLocationUrl(finderLocationUrl)) {
+    return {
+      status: "error",
+      error: "Please share a valid location link.",
+    };
+  }
+
+  const normalizedFinderPhone = normalizePhone(finderPhone);
+  if (
+    normalizedFinderPhone &&
+    (normalizedFinderPhone.length < 7 || normalizedFinderPhone.length > 15)
+  ) {
+    return {
+      status: "error",
+      error: "Please enter a valid phone number or leave it blank.",
+    };
+  }
+
+  // Detect unrealistically fast submissions (basic bot signal).
+  const now = Date.now();
+  const renderedAt = Number.parseInt(renderedAtRaw, 10);
+  if (!Number.isNaN(renderedAt) && now - renderedAt < 800) {
+    return {
+      status: "error",
+      error: "Please review your message and submit again.",
+    };
+  }
 
   // Best-effort rate limiting по cookie.
   const cookieStore = await cookies();
   const lastAlertCookie = cookieStore.get(RATE_LIMIT_COOKIE);
-  const now = Date.now();
 
   if (lastAlertCookie) {
     const last = Number.parseInt(lastAlertCookie.value, 10);
@@ -87,9 +208,45 @@ export async function submitFoundForm(
       return {
         status: "error",
         error:
-          "You recently sent an alert. Please wait a minute before sending another.",
+          "You recently sent an alert. Please wait a couple minutes before sending another.",
       };
     }
+  }
+
+  let finderId = cookieStore.get(FINDER_ID_COOKIE)?.value;
+  if (!finderId) {
+    finderId = randomUUID();
+  }
+
+  const headerStore = await headers();
+  const userAgent = headerStore.get("user-agent") ?? "unknown";
+  const clientIp = getClientIp(headerStore);
+  const fingerprint = hashValue(`${clientIp}|${userAgent}|${finderId}`);
+
+  cleanHits(now);
+  if (!consumeHit(`fp:${fingerprint}`, now, MEMORY_LIMIT_PER_FINGERPRINT)) {
+    return {
+      status: "error",
+      error: "Too many attempts. Please wait a few minutes and try again.",
+    };
+  }
+  if (
+    !consumeHit(
+      `fp:tag:${fingerprint}:${publicId}`,
+      now,
+      MEMORY_LIMIT_PER_FINGERPRINT_TAG,
+    )
+  ) {
+    return {
+      status: "error",
+      error: "Please wait before sending another alert for this tag.",
+    };
+  }
+  if (!consumeHit(`tag:${publicId}`, now, MEMORY_LIMIT_PER_TAG)) {
+    return {
+      status: "error",
+      error: "This tag is receiving too many alerts right now. Please try again shortly.",
+    };
   }
 
   const pet = await getPetByPublicId(publicId);
@@ -125,7 +282,42 @@ export async function submitFoundForm(
     };
   }
 
-  const userAgent = (await headers()).get("user-agent");
+  // DB-level duplicate/spam checks against recent submissions.
+  const recentWindowIso = new Date(now - 10 * 60_000).toISOString();
+  const normalizedMessage = normalizeMessage(finderMessage);
+
+  const { data: recentAlerts } = await serviceClient
+    .from("alerts")
+    .select("finder_phone, finder_message, user_agent, created_at")
+    .eq("public_id", publicId)
+    .gte("created_at", recentWindowIso)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  const recent = recentAlerts ?? [];
+  if (recent.length >= 30) {
+    return {
+      status: "error",
+      error: "This tag is receiving many alerts right now. Please try again soon.",
+    };
+  }
+
+  const looksDuplicate = recent.some((item) => {
+    const phoneMatch =
+      normalizedFinderPhone &&
+      normalizePhone(item.finder_phone ?? "") === normalizedFinderPhone;
+    const messageMatch =
+      normalizeMessage(item.finder_message ?? "") === normalizedMessage;
+    const sameDevice = (item.user_agent ?? "") === userAgent;
+    return Boolean(phoneMatch || (messageMatch && sameDevice));
+  });
+
+  if (looksDuplicate) {
+    return {
+      status: "error",
+      error: "This alert looks like a duplicate. If details changed, edit your message and resend.",
+    };
+  }
 
   const { error: insertError } = await serviceClient.from("alerts").insert({
     pet_id: petRow.id,
@@ -153,6 +345,13 @@ export async function submitFoundForm(
     sameSite: "lax",
     secure: true,
   });
+  cookieStore.set(FINDER_ID_COOKIE, finderId, {
+    httpOnly: true,
+    path: "/",
+    maxAge: 60 * 60 * 24 * 180, // 180 days
+    sameSite: "lax",
+    secure: true,
+  });
 
   // Ссылки для звонка и SMS, если у владельца указан телефон.
   let telLink: string | null = null;
@@ -165,7 +364,7 @@ export async function submitFoundForm(
 
   const ownerPhone = ownerProfile?.phone?.trim();
   if (ownerPhone) {
-    const normalized = ownerPhone.replace(/\D/g, "");
+    const normalized = normalizePhone(ownerPhone);
     const smsPhone = normalized ? `+${normalized}` : ownerPhone;
     telLink = `tel:${smsPhone}`;
 
@@ -201,4 +400,3 @@ export async function submitFoundForm(
     smsLink,
   };
 }
-
