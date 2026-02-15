@@ -65,6 +65,9 @@ export default async function PetOwnerViewPage({ params }: Props) {
         <Link href="/dashboard" className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
           Back to dashboard
         </Link>
+        <Link href="/dashboard/alerts" className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
+          Alerts inbox
+        </Link>
         <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">{pet.name} profile</h1>
       </header>
 
