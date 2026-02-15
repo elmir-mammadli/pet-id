@@ -13,6 +13,7 @@ import {
 
 import { ETSY_TAG_URL } from "@/lib/constants";
 import heroPet from "@/public/images/hero-pet.png";
+import { DismissibleTagBanner } from "./DismissibleTagBanner";
 
 export const metadata: Metadata = {
   title: "NFC Pet Tags That Bring Pets Home Faster",
@@ -91,22 +92,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="mx-auto mt-4 w-full max-w-6xl px-4">
-        <div className="brand-card-muted flex flex-col items-start justify-between gap-3 p-4 sm:flex-row sm:items-center">
-          <p className="text-sm font-medium text-[var(--ink-soft)]">
-            New customer? Buy your NFC pet tag first, then tap it to start activation.
-          </p>
-          <a
-            href={ETSY_TAG_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="brand-button brand-button-secondary border px-4 py-2 text-sm"
-          >
-            <ShoppingBag className="h-4 w-4" />
-            Shop on Etsy
-          </a>
-        </div>
-      </section>
+      <DismissibleTagBanner etsyUrl={ETSY_TAG_URL} />
 
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-12 pt-10 md:grid-cols-[1.05fr_0.95fr] md:items-center md:pt-16">
         <div className="reveal-up space-y-6">
