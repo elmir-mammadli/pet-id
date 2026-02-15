@@ -36,6 +36,7 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   const [finderPhone, setFinderPhone] = useState("");
   const [locationUrl, setLocationUrl] = useState("");
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [formRenderedAt] = useState(() => String(Date.now()));
 
   function handleUseLocation() {
     if (!("geolocation" in navigator)) {
@@ -89,6 +90,15 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
     <form action={formAction} className="brand-card flex flex-col gap-5 p-5 md:p-6">
       <input type="hidden" name="publicId" value={publicId} />
       <input type="hidden" name="finder_location_url" value={locationUrl} />
+      <input type="hidden" name="form_rendered_at" value={formRenderedAt} />
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden
+      />
 
       <div>
         <label htmlFor="finder_message" className="block text-sm font-semibold text-[var(--ink)]">
