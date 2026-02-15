@@ -192,6 +192,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      <footer className="mx-auto mt-8 w-full max-w-6xl px-4">
+        <div className="flex flex-wrap items-center gap-4 pb-4 text-xs text-[var(--ink-soft)]">
+          <Link href="/privacy" className="font-semibold text-[var(--brand-strong)] hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="font-semibold text-[var(--brand-strong)] hover:underline">
+            Terms of Service
+          </Link>
+          <Link href="/legal" className="font-semibold text-[var(--brand-strong)] hover:underline">
+            Legal
+          </Link>
+        </div>
+      </footer>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

@@ -50,6 +50,15 @@ export default async function SignupPage({ searchParams }: Props) {
                 I already have an account
               </Link>
             </div>
+            <p className="mt-4 text-xs text-[var(--ink-soft)]">
+              <Link href="/privacy" className="font-semibold text-[var(--brand-strong)] hover:underline">
+                Privacy
+              </Link>
+              {" · "}
+              <Link href="/terms" className="font-semibold text-[var(--brand-strong)] hover:underline">
+                Terms
+              </Link>
+            </p>
           </section>
         </div>
       </main>
@@ -104,6 +113,15 @@ export default async function SignupPage({ searchParams }: Props) {
             Already have an account?{" "}
             <Link href={`/login?next=${encodeURIComponent(redirectTo)}`} className="font-semibold text-[var(--brand-strong)] hover:underline">
               Log in
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-xs text-[var(--ink-soft)]">
+            <Link href="/privacy" className="font-semibold text-[var(--brand-strong)] hover:underline">
+              Privacy
+            </Link>
+            {" · "}
+            <Link href="/terms" className="font-semibold text-[var(--brand-strong)] hover:underline">
+              Terms
             </Link>
           </p>
         </section>

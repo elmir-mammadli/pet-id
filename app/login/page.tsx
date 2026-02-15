@@ -83,6 +83,15 @@ export default async function LoginPage({ searchParams }: Props) {
               Create one
             </Link>
           </p>
+          <p className="mt-3 text-center text-xs text-[var(--ink-soft)]">
+            <Link href="/privacy" className="font-semibold text-[var(--brand-strong)] hover:underline">
+              Privacy
+            </Link>
+            {" · "}
+            <Link href="/terms" className="font-semibold text-[var(--brand-strong)] hover:underline">
+              Terms
+            </Link>
+          </p>
         </section>
       </div>
     </main>
