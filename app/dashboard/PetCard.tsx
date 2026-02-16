@@ -49,9 +49,6 @@ export function PetCard({ pet, baseUrl }: Props) {
             >
               {pet.is_active ? "Active" : "Inactive"}
             </span>
-            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm ml-2 font-semibold text-[var(--ink-soft)] hover:underline">
-              Edit
-            </Link>
           </div>
           <p className="mt-2 truncate font-mono text-xs text-[var(--ink-soft)]" title={publicUrl}>
             {publicUrl}
