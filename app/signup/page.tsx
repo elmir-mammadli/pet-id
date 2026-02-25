@@ -9,7 +9,7 @@ import { SignupForm } from "./SignupForm";
 
 export const metadata: Metadata = {
   title: "Create Account",
-  description: "Create your Pet ID account to activate tags and receive finder alerts instantly.",
+  description: "Create your PawPort account to activate tags and receive finder alerts instantly.",
 };
 
 type Props = {

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for Pet ID.",
+  description: "Privacy Policy for PawPort.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
 
         <section className="brand-card space-y-5 p-6 text-sm leading-relaxed text-[var(--ink-soft)]">
           <p>
-            This Privacy Policy explains how Pet ID collects, uses, and protects information when you use our website,
+            This Privacy Policy explains how PawPort collects, uses, and protects information when you use our website,
             dashboard, and tag activation services.
           </p>
 
@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <h2 className="text-base font-bold text-[var(--ink)]">8. Children</h2>
             <p className="mt-1">
-              Pet ID is not directed to children under 13. Do not use the service if you are under the age required in
+              PawPort is not directed to children under 13. Do not use the service if you are under the age required in
               your jurisdiction.
             </p>
           </div>

@@ -64,7 +64,7 @@ export default async function ActivatePage({ params }: Props) {
     return (
       <CenterState
         title="This tag has not been registered yet"
-        description="Log in or create an account to claim this Pet ID tag and publish your pet's profile."
+        description="Log in or create an account to claim this PawPort tag and publish your pet's profile."
       >
         <div className="mt-6 flex flex-col gap-3">
           <Link
@@ -94,7 +94,7 @@ export default async function ActivatePage({ params }: Props) {
             <ShieldCheck className="h-3.5 w-3.5" />
             Tag activation
           </span>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--ink)]">Register your Pet ID tag</h1>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--ink)]">Register your PawPort tag</h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--ink-soft)]">
             Add your pet details once. After activation, anyone who scans the tag sees a clear public profile and can notify you immediately.
           </p>

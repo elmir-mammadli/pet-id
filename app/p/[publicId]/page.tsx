@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!pet || !pet.is_active) {
     return {
       title: "Pet Tag",
-      description: "Public pet ID tag page.",
+      description: "Public PawPort tag page.",
       robots: { index: false, follow: false },
     };
   }
@@ -53,8 +53,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const subtitle = buildSubtitle(pet).join(" - ");
   const pageTitle = `Found ${pet.name}? Help them get home`;
   const description = subtitle
-    ? `${pet.name} (${subtitle}) is registered with Pet ID. Tap to notify the owner quickly.`
-    : `${pet.name} is registered with Pet ID. Tap to notify the owner quickly.`;
+    ? `${pet.name} (${subtitle}) is registered with PawPort. Tap to notify the owner quickly.`
+    : `${pet.name} is registered with PawPort. Tap to notify the owner quickly.`;
 
   return {
     title: pageTitle,

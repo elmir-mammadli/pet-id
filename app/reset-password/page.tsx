@@ -5,7 +5,7 @@ import { RequestResetForm } from "./RequestResetForm";
 
 export const metadata: Metadata = {
   title: "Reset Password",
-  description: "Request a password reset link for your Pet ID account.",
+  description: "Request a password reset link for your PawPort account.",
 };
 
 export default function ResetPasswordPage() {

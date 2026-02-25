@@ -5,7 +5,7 @@ import { UpdatePasswordForm } from "./UpdatePasswordForm";
 
 export const metadata: Metadata = {
   title: "Set New Password",
-  description: "Set a new password for your Pet ID account.",
+  description: "Set a new password for your PawPort account.",
   robots: { index: false, follow: false },
 };
 

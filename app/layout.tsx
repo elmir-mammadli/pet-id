@@ -20,14 +20,14 @@ function getMetadataBase() {
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: {
-    default: "Pet ID | Digital Lost & Found Tag for Pets",
-    template: "%s | Pet ID",
+    default: "PawPort by Tigo",
+    template: "%s | PawPort by Tigo",
   },
   description:
-    "Pet ID helps families reunite with lost dogs and cats faster through smart digital tags, private contact flows, and instant finder alerts.",
-  applicationName: "Pet ID",
+    "PawPort by Tigo helps families reunite with lost dogs and cats faster through smart digital tags, private contact flows, and instant finder alerts.",
+  applicationName: "PawPort by Tigo",
   keywords: [
-    "pet id tag",
+    "pawport tag",
     "lost pet recovery",
     "dog qr tag",
     "cat id tag",
@@ -38,24 +38,24 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Pet ID | Digital Lost & Found Tag for Pets",
+    title: "PawPort by Tigo",
     description:
-      "A modern pet safety platform: activate tags, share profiles, and receive finder alerts instantly.",
-    siteName: "Pet ID",
+      "PawPort by Tigo is a modern pet safety platform: activate tags, share profiles, and receive finder alerts instantly.",
+    siteName: "PawPort by Tigo",
     images: [
       {
         url: "/images/hero-pet.png",
         width: 1200,
         height: 630,
-        alt: "Pet ID digital tag and pet safety experience",
+        alt: "PawPort by Tigo digital tag and pet safety experience",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pet ID | Digital Lost & Found Tag for Pets",
+    title: "PawPort by Tigo",
     description:
-      "Protect your dog or cat with a smart digital ID and instant finder contact.",
+      "Protect your dog or cat with PawPort by Tigo and instant finder contact.",
     images: ["/images/hero-pet.png"],
   },
   robots: {

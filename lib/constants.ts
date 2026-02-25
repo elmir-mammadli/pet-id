@@ -1,2 +1,2 @@
 export const ETSY_TAG_URL =
-  "https://anythingbrandstudio.etsy.com/listing/4434805909";
+  "https://www.etsy.com/listing/4462210428/smart-nfc-pet-id-tag-digital-pet"

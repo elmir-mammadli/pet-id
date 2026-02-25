@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Legal",
-  description: "Legal pages for Pet ID, including Privacy Policy and Terms of Service.",
+  description: "Legal pages for PawPort, including Privacy Policy and Terms of Service.",
 };
 
 export default function LegalIndexPage() {
@@ -13,7 +13,7 @@ export default function LegalIndexPage() {
         <header className="brand-card p-6">
           <h1 className="text-3xl font-extrabold tracking-tight text-[var(--ink)]">Legal</h1>
           <p className="mt-2 text-sm text-[var(--ink-soft)]">
-            Review our legal policies before using Pet ID.
+            Review our legal policies before using PawPort.
           </p>
         </header>
 

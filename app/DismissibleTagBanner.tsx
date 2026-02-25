@@ -52,7 +52,7 @@ export function DismissibleTagBanner({ etsyUrl }: Props) {
           type="button"
           onClick={handleDismiss}
           aria-label="Dismiss banner"
-          className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ccd4ca] bg-white text-[var(--ink-soft)] transition-colors hover:bg-[#f2f5f0] hover:text-[var(--ink)]"
+          className="absolute right-2 top-2 inline-flex cursor-pointer h-8 w-8 items-center justify-center rounded-full border border-[#ccd4ca] bg-white text-[var(--ink-soft)] transition-colors hover:bg-[#f2f5f0] hover:text-[var(--ink)]"
         >
           <X className="h-4 w-4" />
         </button>

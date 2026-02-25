@@ -21,7 +21,7 @@ export default function NewPetPage() {
           </p>
 
           <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm text-[var(--ink-soft)]">
-            <li>Buy a Pet ID tag.</li>
+            <li>Buy a PawPort tag.</li>
             <li>Tap or scan the tag with your phone.</li>
             <li>Open the activation link and complete setup.</li>
           </ol>

@@ -7,7 +7,7 @@ import { OAuthButtons } from "./OAuthButtons";
 
 export const metadata: Metadata = {
   title: "Log In",
-  description: "Access your Pet ID dashboard to manage pet profiles and recovery alerts.",
+  description: "Access your PawPort dashboard to manage pet profiles and recovery alerts.",
 };
 
 type Props = {

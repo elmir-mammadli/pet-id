@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for Pet ID.",
+  description: "Terms of Service for PawPort.",
 };
 
 export default function TermsPage() {
@@ -17,21 +17,21 @@ export default function TermsPage() {
 
         <section className="brand-card space-y-5 p-6 text-sm leading-relaxed text-[var(--ink-soft)]">
           <p>
-            These Terms govern your use of Pet ID services, including account access, tag activation, public pet
+            These Terms govern your use of PawPort services, including account access, tag activation, public pet
             profiles, finder reporting, and dashboard tools.
           </p>
 
           <div>
             <h2 className="text-base font-bold text-[var(--ink)]">1. Acceptance of Terms</h2>
             <p className="mt-1">
-              By using Pet ID, you agree to these Terms. If you do not agree, do not use the service.
+              By using PawPort, you agree to these Terms. If you do not agree, do not use the service.
             </p>
           </div>
 
           <div>
             <h2 className="text-base font-bold text-[var(--ink)]">2. Service Description</h2>
             <p className="mt-1">
-              Pet ID provides a digital profile and recovery communication service linked to physical NFC tags.
+              PawPort provides a digital profile and recovery communication service linked to physical NFC tags.
               Activation and account setup are tied to tag ownership and activation links.
             </p>
           </div>
@@ -47,7 +47,7 @@ export default function TermsPage() {
           <div>
             <h2 className="text-base font-bold text-[var(--ink)]">4. Prohibited Use</h2>
             <p className="mt-1">
-              You may not use Pet ID for unlawful, abusive, fraudulent, or harmful activity, including impersonation,
+              You may not use PawPort for unlawful, abusive, fraudulent, or harmful activity, including impersonation,
               spam, or unauthorized access attempts.
             </p>
           </div>
@@ -78,7 +78,7 @@ export default function TermsPage() {
           <div>
             <h2 className="text-base font-bold text-[var(--ink)]">8. Limitation of Liability</h2>
             <p className="mt-1">
-              To the maximum extent permitted by law, Pet ID is not liable for indirect, incidental, or consequential
+              To the maximum extent permitted by law, PawPort is not liable for indirect, incidental, or consequential
               damages arising from use of the service.
             </p>
           </div>

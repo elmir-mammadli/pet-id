@@ -5,7 +5,6 @@ import {
   BellRing,
   CheckCircle2,
   Clock3,
-  ShieldCheck,
   ShoppingBag,
   Smartphone,
   Sparkles,
@@ -15,10 +14,39 @@ import { ETSY_TAG_URL } from "@/lib/constants";
 import heroPet from "@/public/images/hero-pet.png";
 import { DismissibleTagBanner } from "./DismissibleTagBanner";
 
+function PawPrintIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      width="24"
+      height="24"
+      className="h-6 w-6 text-[#2d6a4f]"
+      aria-hidden
+    >
+      <path d="M12 2C9.5 2 8 4 8 6s1.5 4 4 4 4-2 4-4-1.5-4-4-4zm-5 6C5.5 8 4 9.5 4 11s1.5 3 3 3 3-1.5 3-3-1.5-3-3-3zm10 0c-1.5 0-3 1.5-3 3s1.5 3 3 3 3-1.5 3-3-1.5-3-3-3zM6.5 15C4.5 15 3 17 3 19s1.5 3 3 3c.8 0 1.5-.3 2-.8L12 24l4-2.8c.5.5 1.2.8 2 .8 1.5 0 3-1.5 3-3s-1.5-4-3.5-4c-.8 0-1.6.4-2.2 1L12 17.5l-3.3-1.5c-.6-.6-1.4-1-2.2-1z" />
+    </svg>
+  );
+}
+
+function TigoWordmark() {
+  return (
+    <Image
+      src="/tigo.svg"
+      alt="Tigo"
+      width={100}
+      height={32}
+      className="hidden md:block h-6 w-auto"
+      priority
+    />
+  );
+}
+
 export const metadata: Metadata = {
-  title: "NFC Pet Tags That Bring Pets Home Faster",
+  title: "PawPort by Tigo",
   description:
-    "Buy an NFC Pet ID tag and activate it in minutes. If your dog or cat is found, Pet ID sends private alerts so you reconnect quickly.",
+    "Buy an NFC PawPort tag and activate it in minutes. If your dog or cat is found, PawPort sends private alerts so you reconnect quickly.",
 };
 
 const trustPoints = [
@@ -49,9 +77,9 @@ export default function HomePage() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: "Pet ID NFC Tag",
+    name: "PawPort NFC Tag",
     description: "NFC pet tag with digital profile and recovery alerts.",
-    brand: "Pet ID",
+    brand: "PawPort",
     category: "Pet Safety",
     offers: {
       "@type": "Offer",
@@ -69,12 +97,13 @@ export default function HomePage() {
       <header className="reveal-up px-4 pt-5">
         <div className="glass-panel mx-auto flex w-full max-w-6xl items-center justify-between rounded-full px-4 py-2.5 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-white">
-              <ShieldCheck className="h-4.5 w-4.5" />
-            </span>
-            <p className="text-sm font-extrabold tracking-tight text-[var(--ink)] sm:text-base">
-              Pet ID
-            </p>
+            <PawPrintIcon />
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-extrabold tracking-tight text-[var(--ink)] sm:text-base">
+                PawPort <span className="hidden md:inline">by</span>
+              </p>
+              <TigoWordmark />
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/login" className="brand-button brand-button-secondary px-4 py-2 text-sm">
