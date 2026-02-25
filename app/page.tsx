@@ -37,7 +37,7 @@ function TigoWordmark() {
       alt="Tigo"
       width={100}
       height={32}
-      className="hidden md:block h-6 w-auto"
+      className="hidden md:block h-5 w-auto"
       priority
     />
   );
