@@ -4,10 +4,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
   Clock3,
+  ExternalLink,
   MapPinned,
   MessageSquareText,
   PhoneCall,
   ShieldCheck,
+  User,
 } from "lucide-react";
 
 import {
@@ -297,8 +299,9 @@ export default async function AlertsInboxPage({ searchParams }: Props) {
                             {pet && (
                               <Link
                                 href={`/dashboard/pets/${pet.id}`}
-                                className="brand-button brand-button-secondary border px-3 py-2 text-sm"
+                                className="brand-button brand-button-secondary w-full border border-[var(--brand)] bg-[#f3f8f5] px-3 py-2 text-sm text-[var(--brand-strong)] hover:bg-[#ebf3ee] sm:w-auto"
                               >
+                                <User className="h-4 w-4" />
                                 Open owner view
                               </Link>
                             )}
@@ -307,8 +310,9 @@ export default async function AlertsInboxPage({ searchParams }: Props) {
                               href={`/p/${encodeURIComponent(alert.public_id)}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="brand-button brand-button-secondary border px-3 py-2 text-sm"
+                              className="brand-button brand-button-secondary w-full border border-[var(--brand)] bg-[#f3f8f5] px-3 py-2 text-sm text-[var(--brand-strong)] hover:bg-[#ebf3ee] sm:w-auto"
                             >
+                              <ExternalLink className="h-4 w-4" />
                               Open public page
                             </a>
 
