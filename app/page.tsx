@@ -4,14 +4,13 @@ import Link from "next/link";
 import {
   BellRing,
   CheckCircle2,
-  Clock3,
   ShoppingBag,
   Smartphone,
   Sparkles,
 } from "lucide-react";
 
 import { ETSY_TAG_URL } from "@/lib/constants";
-import heroPet from "@/public/images/hero-pet.png";
+import heroNfc from "@/public/images/hero-nfc.png";
 import { DismissibleTagBanner } from "./DismissibleTagBanner";
 
 function PawPrintIcon() {
@@ -162,34 +161,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="reveal-up relative">
-          <div className="brand-card relative mx-auto max-w-md overflow-hidden p-4 sm:p-6">
-            <div className="absolute -right-8 -top-8 h-36 w-36 rounded-full bg-[#d9f2e0] blur-2xl" />
-            <div className="absolute -bottom-8 -left-4 h-28 w-28 rounded-full bg-[#e9efe2] blur-xl" />
-            <Image
-              src={heroPet}
-              alt="Golden retriever wearing a digital pet tag"
-              priority
-              className="relative z-10 mx-auto w-full max-w-[340px] rounded-3xl"
-            />
-            <div className="relative z-10 mt-4 grid grid-cols-2 gap-3">
-              <div className="brand-card-muted p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]">
-                  Alert Time
-                </p>
-                <p className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-[var(--ink)]">
-                  <Clock3 className="h-4 w-4 text-[var(--brand-strong)]" />
-                  Instant delivery
-                </p>
-              </div>
-              <div className="brand-card-muted p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]">
-                  Finder UX
-                </p>
-                <p className="mt-1 text-sm font-bold text-[var(--ink)]">Simple and stress-free</p>
-              </div>
-            </div>
-          </div>
+        <div className="reveal-up relative brand-card p-5 rounded-3xl">
+          <Image
+            src={heroNfc}
+            alt="PawPort NFC tag product image"
+            priority
+            className="mx-auto w-full max-w-lg rounded-2xl"
+          />
         </div>
       </section>
 

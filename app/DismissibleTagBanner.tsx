@@ -35,7 +35,7 @@ export function DismissibleTagBanner({ etsyUrl }: Props) {
   return (
     <section className="mx-auto mt-4 w-full max-w-6xl px-4">
       <div className="brand-card-muted relative flex flex-col items-start justify-between gap-3 p-4 pr-12 sm:flex-row sm:items-center">
-        <p className="text-sm font-medium text-[var(--ink-soft)]">
+        <p className="text-sm font-medium text-(--ink-soft)">
           New customer? Buy your NFC pet tag first, then tap it to start activation.
         </p>
         <a
@@ -52,7 +52,7 @@ export function DismissibleTagBanner({ etsyUrl }: Props) {
           type="button"
           onClick={handleDismiss}
           aria-label="Dismiss banner"
-          className="absolute right-2 top-2 inline-flex cursor-pointer h-8 w-8 items-center justify-center rounded-full border border-[#ccd4ca] bg-white text-[var(--ink-soft)] transition-colors hover:bg-[#f2f5f0] hover:text-[var(--ink)]"
+          className="absolute right-2 top-2 inline-flex cursor-pointer size-6.5 items-center justify-center rounded-full border border-[#ccd4ca] bg-white text-(--ink-soft) transition-colors hover:bg-[#f2f5f0] hover:text-(--ink)"
         >
           <X className="h-4 w-4" />
         </button>
