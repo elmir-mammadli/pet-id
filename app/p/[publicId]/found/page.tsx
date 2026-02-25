@@ -99,9 +99,6 @@ export default async function FoundPage({ params }: PageProps) {
 
       <div className="relative mx-auto flex w-full max-w-2xl flex-col gap-5">
         <header className="brand-card overflow-hidden">
-        <a href="https://maps.app.goo.gl/ECm7UiyYSg2kxccT8" target="_blank" rel="noopener noreferrer">
-        Instagram LOGO
-          </a>
           <div className="grid gap-0 md:grid-cols-[0.44fr_0.56fr]">
             {pet.photo_path ? (
               <div className="relative h-56 bg-[#e4ede1] md:h-full">
