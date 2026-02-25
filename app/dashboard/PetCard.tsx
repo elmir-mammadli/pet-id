@@ -53,24 +53,20 @@ export function PetCard({ pet, baseUrl }: Props) {
           <p className="mt-2 truncate font-mono text-xs text-[var(--ink-soft)]" title={publicUrl}>
             {publicUrl}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <Link
-              href={`/dashboard/pets/${pet.id}`}
-              className="brand-button brand-button-secondary border px-3 py-1.5 text-sm"
-            >
+          <div className="mt-3 flex flex-wrap items-center gap-1">
+            <Link href={`/dashboard/pets/${pet.id}`} className="text-sm font-semibold text-[var(--brand-strong)] hover:underline">
               Owner view
             </Link>
+            <span className="text-[#b1b8ad] text-sm">·</span>
             <a
               href={publicUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="brand-button brand-button-secondary border px-3 py-1.5 text-sm"
+              className="text-sm font-semibold text-[var(--ink-soft)] hover:underline"
             >
               Open public page
             </a>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm font-semibold text-[var(--ink-soft)] hover:underline">
+            <Link href={`/dashboard/pets/${pet.id}/edit`} className="text-sm ml-2 font-semibold text-[var(--ink-soft)] hover:underline">
               Edit
             </Link>
             <span className="text-[#b1b8ad]">·</span>
