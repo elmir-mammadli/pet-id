@@ -37,6 +37,9 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   const [locationUrl, setLocationUrl] = useState("");
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [formRenderedAt] = useState(() => String(Date.now()));
+  const deliveredChannels = (state.notificationChannels ?? []).map((channel) =>
+    channel === "sms" ? "SMS" : "email",
+  );
 
   function handleUseLocation() {
     if (!("geolocation" in navigator)) {
@@ -68,8 +71,17 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
       <div className="brand-card p-6 text-center">
         <h2 className="text-2xl font-extrabold tracking-tight text-[var(--ink)]">Alert sent</h2>
         <p className="mt-2 text-sm text-[var(--ink-soft)]">
-          Thank you for helping. You can contact {petName}&apos;s owner directly:
+          Thank you for helping. Your report is saved in the owner&apos;s alerts inbox.
         </p>
+        {deliveredChannels.length > 0 ? (
+          <p className="mt-1 text-sm text-[var(--brand-strong)]">
+            Owner notified via {deliveredChannels.join(" + ")}.
+          </p>
+        ) : (
+          <p className="mt-1 text-xs text-[var(--ink-soft)]">
+            Automatic notifications are not configured yet. You can still contact the owner directly if contact buttons are available.
+          </p>
+        )}
         <div className="mt-4 flex flex-col gap-3">
           {state.telLink && (
             <a href={state.telLink} className="brand-button brand-button-secondary border">

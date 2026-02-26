@@ -60,7 +60,7 @@ export function OAuthButtons({ redirectTo = "/dashboard" }: Props) {
       type="button"
       onClick={handleGoogle}
       disabled={loading}
-      className="brand-button brand-button-secondary w-full border px-4 py-3 text-sm font-semibold disabled:opacity-55"
+      className="brand-button brand-button-secondary cursor-pointer w-full border px-4 py-3 text-sm font-semibold disabled:opacity-55"
     >
       <GoogleIcon />
       {loading ? "Redirecting..." : "Continue with Google"}

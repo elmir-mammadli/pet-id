@@ -45,7 +45,7 @@ export function DismissibleTagBanner({ etsyUrl }: Props) {
           className="brand-button brand-button-secondary border px-4 py-2 text-sm"
         >
           <ShoppingBag className="h-4 w-4" />
-          Shop on Etsy
+          Shop now
         </a>
 
         <button

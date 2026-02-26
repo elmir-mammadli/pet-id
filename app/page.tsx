@@ -180,7 +180,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="brand-button brand-button-primary text-base"
             >
-              Buy tag on Etsy
+              Buy tag
             </a>
             <Link href="/login" className="brand-button brand-button-secondary text-base">
               I already own a tag

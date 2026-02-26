@@ -20,6 +20,31 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Owner Notifications For Found Alerts
+
+When a finder submits an alert, the app stores it in `alerts` and can also notify the owner automatically.
+
+### Email notifications (Resend)
+
+Set these environment variables:
+
+```bash
+RESEND_API_KEY=...
+RESEND_FROM_EMAIL=alerts@your-domain.com
+```
+
+### SMS notifications (Twilio)
+
+Set these environment variables:
+
+```bash
+TWILIO_ACCOUNT_SID=...
+TWILIO_AUTH_TOKEN=...
+TWILIO_FROM_NUMBER=+15551234567
+```
+
+If neither provider is configured, alerts still appear in the owner dashboard inbox.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

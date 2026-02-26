@@ -34,7 +34,7 @@ export default function NewPetPage() {
               className="brand-button brand-button-primary"
             >
               <ShoppingBag className="h-4 w-4" />
-              Buy tag on Etsy
+              Buy tag
             </a>
             <Link href="/dashboard" className="brand-button brand-button-secondary border">
               <ScanLine className="h-4 w-4" />

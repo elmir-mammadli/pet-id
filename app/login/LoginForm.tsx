@@ -93,7 +93,7 @@ export function LoginForm({ redirectTo }: Props) {
       <button
         type="submit"
         disabled={loading}
-        className="brand-button brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
+        className="brand-button brand-button-primary cursor-pointer w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? "Signing in..." : "Log in"}
       </button>

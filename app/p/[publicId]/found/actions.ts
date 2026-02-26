@@ -8,6 +8,7 @@ import {
   createSupabaseServiceRoleClient,
   type PublicPetProfile,
 } from "@/lib/supabase/server";
+import { notifyOwnerOfFinderAlert } from "@/lib/notifications/owner-alert";
 
 export type FoundFormState = {
   status: "idle" | "submitting" | "success" | "error";
@@ -16,6 +17,8 @@ export type FoundFormState = {
   telLink?: string | null;
   /** When owner has phone: open SMS app with pre-filled message. */
   smsLink?: string | null;
+  /** Delivery channels that were actually sent to the owner. */
+  notificationChannels?: Array<"email" | "sms">;
 };
 
 const MAX_MESSAGE_LENGTH = 1000;
@@ -362,6 +365,15 @@ export async function submitFoundForm(
     .eq("user_id", petRow.owner_id)
     .maybeSingle();
 
+  let ownerEmail: string | null = null;
+  const { data: ownerAuthData, error: ownerAuthError } =
+    await serviceClient.auth.admin.getUserById(petRow.owner_id);
+  if (ownerAuthError) {
+    console.error("[found-action] Failed to load owner email", ownerAuthError);
+  } else {
+    ownerEmail = ownerAuthData.user?.email?.trim() ?? null;
+  }
+
   const ownerPhone = ownerProfile?.phone?.trim();
   if (ownerPhone) {
     const normalized = normalizePhone(ownerPhone);
@@ -394,9 +406,31 @@ export async function submitFoundForm(
     smsLink = `sms:${smsPhone}?body=${encodeURIComponent(body)}`;
   }
 
+  const notificationResult = await notifyOwnerOfFinderAlert({
+    ownerDisplayName: ownerProfile?.display_name?.trim() ?? null,
+    ownerEmail,
+    ownerPhone,
+    petName: pet.name,
+    petBreed: pet.breed,
+    petAgeYears: pet.age_years,
+    publicId,
+    finderMessage,
+    finderPhone: finderPhone || null,
+    finderLocationUrl: finderLocationUrl || null,
+  });
+
+  if (notificationResult.errors.length > 0) {
+    console.error("[found-action] Owner notification errors", {
+      ownerId: petRow.owner_id,
+      publicId,
+      errors: notificationResult.errors,
+    });
+  }
+
   return {
     status: "success",
     telLink,
     smsLink,
+    notificationChannels: notificationResult.delivered,
   };
 }

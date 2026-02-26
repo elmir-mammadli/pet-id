@@ -44,7 +44,7 @@ export default async function SignupPage({ searchParams }: Props) {
                 rel="noopener noreferrer"
                 className="brand-button brand-button-primary"
               >
-                Buy tag on Etsy
+                Buy tag
               </a>
               <Link href="/login" className="brand-button brand-button-secondary border">
                 I already have an account
