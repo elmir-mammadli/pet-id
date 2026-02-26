@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import {
+  ArrowRight,
   BellRing,
   CheckCircle2,
+  MessageSquareText,
+  ScanLine,
   ShoppingBag,
   Smartphone,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
 import { ETSY_TAG_URL } from "@/lib/constants";
@@ -54,21 +59,52 @@ const trustPoints = [
   "Mobile-first finder experience",
 ];
 
-const steps = [
+type OnboardingStep = {
+  title: string;
+  body: string;
+  hint: string;
+  icon: LucideIcon;
+  secondaryIcon: LucideIcon;
+  visualLabel: string;
+  bullets: string[];
+};
+
+const onboardingSteps: OnboardingStep[] = [
   {
-    title: "Buy your NFC tag",
-    body: "Order the physical tag, attach it to your pet, and keep it on the collar.",
+    title: "Buy and attach your tag",
+    body: "Get a PawPort NFC tag and clip it to your pet's collar so finders have one clear place to scan.",
+    hint: "Physical tag on collar",
     icon: ShoppingBag,
+    secondaryIcon: Tag,
+    visualLabel: "Purchase -> Attach",
+    bullets: [
+      "Attach once to the collar.",
+      "Ready for finder scans right away.",
+    ],
   },
   {
-    title: "Tap and activate",
-    body: "Tap the tag with your phone and complete activation from the personal token link.",
+    title: "Tap and complete setup",
+    body: "Tap the tag with your phone, open the activation link, and add your pet profile details in minutes.",
+    hint: "No app download required",
     icon: Smartphone,
+    secondaryIcon: ScanLine,
+    visualLabel: "Tap -> Activate",
+    bullets: [
+      "Open your personal activation link.",
+      "Add photo, notes, and key info.",
+    ],
   },
   {
-    title: "Get alerts instantly",
-    body: "When someone finds your pet, they can notify you in seconds through the public profile page.",
+    title: "Get finder alerts instantly",
+    body: "When someone scans the tag, they land on your pet's page and can send you a direct private alert.",
+    hint: "Fast owner notification",
     icon: BellRing,
+    secondaryIcon: MessageSquareText,
+    visualLabel: "Scan -> Alert",
+    bullets: [
+      "Finder sees a clear public page.",
+      "You get a private contact alert fast.",
+    ],
   },
 ];
 
@@ -172,16 +208,57 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-3">
-        <div className="brand-card grid gap-4 p-5 sm:grid-cols-3 sm:p-6">
-          {steps.map(({ title, body, icon: Icon }) => (
-            <article key={title} className="rounded-2xl bg-[var(--surface-muted)] p-4">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ddf1e4] text-[var(--brand-strong)]">
-                <Icon className="h-4.5 w-4.5" />
-              </span>
-              <h2 className="mt-3 text-base font-bold text-[var(--ink)]">{title}</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-[var(--ink-soft)]">{body}</p>
-            </article>
-          ))}
+        <div className="brand-card p-5 sm:p-6">
+          <div className="mb-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--brand-strong)]">
+              3-step onboarding
+            </p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[var(--ink)]">
+              How PawPort works in real life
+            </h2>
+            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-[var(--ink-soft)]">
+              This flow is built around the physical NFC tag so setup is simple for you and obvious for anyone who finds your pet.
+            </p>
+          </div>
+
+          <ol className="grid gap-4 md:grid-cols-3">
+            {onboardingSteps.map(({ title, body, hint, icon: Icon, secondaryIcon: SecondaryIcon, visualLabel, bullets }, index) => (
+              <li key={title} className="brand-card-muted overflow-hidden p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--brand-strong)]">
+                    Step {index + 1}
+                  </span>
+                  <span className="rounded-full border border-[#cfe0d3] bg-[#eaf4ee] px-2 py-0.5 text-[11px] font-semibold text-[var(--brand-strong)]">
+                    {hint}
+                  </span>
+                </div>
+
+                <div className="mt-3 rounded-2xl border border-[#d7ded3] bg-[linear-gradient(145deg,#fbfdfa_0%,#eff5ef_100%)] p-3">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#dff0e5] text-[var(--brand-strong)]">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-[#7b8d7f]" />
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#cadece] bg-white text-[var(--brand-strong)]">
+                      <SecondaryIcon className="h-5 w-5" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-center text-[11px] font-semibold text-[var(--ink-soft)]">{visualLabel}</p>
+                </div>
+
+                <h3 className="mt-3 text-base font-extrabold tracking-tight text-[var(--ink)]">{title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--ink-soft)]">{body}</p>
+                <ul className="mt-3 space-y-1.5">
+                  {bullets.map((item) => (
+                    <li key={item} className="flex items-start gap-1.5 text-xs text-[var(--ink-soft)]">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--brand-strong)]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

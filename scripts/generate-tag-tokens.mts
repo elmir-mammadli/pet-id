@@ -33,10 +33,7 @@ function generateToken() {
 }
 
 const count = Math.max(1, parseInt(process.argv[2], 10) || 1);
-const baseUrl =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.VERCEL_URL ||
-  "https://pet-id-liart.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL!;
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
