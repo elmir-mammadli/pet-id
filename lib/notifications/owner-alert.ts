@@ -1,4 +1,10 @@
 type NotificationChannel = "email" | "sms";
+type NotificationSkipReason =
+  | "owner_email_missing"
+  | "email_not_configured"
+  | "owner_phone_missing"
+  | "owner_phone_invalid"
+  | "sms_not_configured";
 
 export type OwnerAlertNotificationInput = {
   ownerDisplayName: string | null;
@@ -17,6 +23,7 @@ export type OwnerAlertNotificationResult = {
   attempted: NotificationChannel[];
   delivered: NotificationChannel[];
   errors: string[];
+  skipped: NotificationSkipReason[];
 };
 
 type NotificationContent = {
@@ -189,12 +196,17 @@ export async function notifyOwnerOfFinderAlert(
     attempted: [],
     delivered: [],
     errors: [],
+    skipped: [],
   };
 
   const content = buildContent(input);
 
   const email = input.ownerEmail?.trim();
-  if (email && process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL) {
+  if (!email) {
+    result.skipped.push("owner_email_missing");
+  } else if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL) {
+    result.skipped.push("email_not_configured");
+  } else {
     result.attempted.push("email");
     try {
       await sendEmail(email, content);
@@ -207,12 +219,17 @@ export async function notifyOwnerOfFinderAlert(
   }
 
   const smsPhone = toE164(input.ownerPhone);
-  if (
-    smsPhone &&
-    process.env.TWILIO_ACCOUNT_SID &&
-    process.env.TWILIO_AUTH_TOKEN &&
-    process.env.TWILIO_FROM_NUMBER
+  if (!input.ownerPhone?.trim()) {
+    result.skipped.push("owner_phone_missing");
+  } else if (!smsPhone) {
+    result.skipped.push("owner_phone_invalid");
+  } else if (
+    !process.env.TWILIO_ACCOUNT_SID ||
+    !process.env.TWILIO_AUTH_TOKEN ||
+    !process.env.TWILIO_FROM_NUMBER
   ) {
+    result.skipped.push("sms_not_configured");
+  } else {
     result.attempted.push("sms");
     try {
       await sendSms(smsPhone, content);

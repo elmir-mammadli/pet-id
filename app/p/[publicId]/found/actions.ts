@@ -19,6 +19,12 @@ export type FoundFormState = {
   smsLink?: string | null;
   /** Delivery channels that were actually sent to the owner. */
   notificationChannels?: Array<"email" | "sms">;
+  /** Channels we tried to send but may have failed. */
+  notificationAttempted?: Array<"email" | "sms">;
+  /** Whether at least one outbound provider returned an error. */
+  notificationHadErrors?: boolean;
+  /** Why channels were skipped. */
+  notificationSkipped?: string[];
 };
 
 const MAX_MESSAGE_LENGTH = 1000;
@@ -27,7 +33,7 @@ const MAX_LINKS_IN_MESSAGE = 2;
 
 // Browser-level cooldown.
 const RATE_LIMIT_COOKIE = "finder_last_alert_at";
-const RATE_LIMIT_WINDOW_MS = 120_000;
+const RATE_LIMIT_WINDOW_MS = 60_000;
 const FINDER_ID_COOKIE = "finder_id";
 
 // In-process abuse controls (best effort; complements cookie + DB checks).
@@ -432,5 +438,8 @@ export async function submitFoundForm(
     telLink,
     smsLink,
     notificationChannels: notificationResult.delivered,
+    notificationAttempted: notificationResult.attempted,
+    notificationHadErrors: notificationResult.errors.length > 0,
+    notificationSkipped: notificationResult.skipped,
   };
 }

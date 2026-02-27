@@ -40,6 +40,12 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
   const deliveredChannels = (state.notificationChannels ?? []).map((channel) =>
     channel === "sms" ? "SMS" : "email",
   );
+  const attemptedChannels = (state.notificationAttempted ?? []).map((channel) =>
+    channel === "sms" ? "SMS" : "email",
+  );
+  const skippedReasons = state.notificationSkipped ?? [];
+  const ownerEmailMissing = skippedReasons.includes("owner_email_missing");
+  const emailNotConfigured = skippedReasons.includes("email_not_configured");
 
   function handleUseLocation() {
     if (!("geolocation" in navigator)) {
@@ -77,9 +83,30 @@ export function FoundForm({ publicId, petName }: FoundFormProps) {
           <p className="mt-1 text-sm text-[var(--brand-strong)]">
             Owner notified via {deliveredChannels.join(" + ")}.
           </p>
+        ) : attemptedChannels.length > 0 ? (
+          <p className="mt-1 text-xs text-amber-700">
+            We tried sending {attemptedChannels.join(" + ")} notification{attemptedChannels.length > 1 ? "s" : ""}, but delivery failed. Please use direct contact buttons below.
+          </p>
         ) : (
-          <p className="mt-1 text-xs text-[var(--ink-soft)]">
-            Automatic notifications are not configured yet. You can still contact the owner directly if contact buttons are available.
+          <>
+            {ownerEmailMissing ? (
+              <p className="mt-1 text-xs text-amber-700">
+                Owner email is unavailable for this account, so automatic email notification could not be sent.
+              </p>
+            ) : emailNotConfigured ? (
+              <p className="mt-1 text-xs text-[var(--ink-soft)]">
+                Automatic notifications are not configured yet. You can still contact the owner directly if contact buttons are available.
+              </p>
+            ) : (
+              <p className="mt-1 text-xs text-[var(--ink-soft)]">
+                Automatic delivery channel was not available for this alert. You can still contact the owner directly if contact buttons are available.
+              </p>
+            )}
+          </>
+        )}
+        {state.notificationHadErrors && (
+          <p className="mt-1 text-[11px] text-[var(--ink-soft)]">
+            If this keeps happening, check server logs for notification provider errors.
           </p>
         )}
         <div className="mt-4 flex flex-col gap-3">
