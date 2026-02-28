@@ -1,9 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, ExternalLinkIcon, EyeIcon, MoreHorizontal, MoreVertical, UserIcon } from "lucide-react";
+import { ExternalLink, MoreVertical, UserIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import type { Pet } from "@/lib/types/pet";
 
+import { CopyPublicUrl } from "./CopyPublicUrl";
 import { DeletePetButton } from "./DeletePetButton";
 
 type Props = {
@@ -74,9 +81,7 @@ export function PetCard({ pet, baseUrl }: Props) {
               {pet.is_active ? "Active" : "Inactive"}
             </span>
           </div>
-          <p className="mt-2 truncate font-mono text-xs text-[var(--ink-soft)]" title={publicUrl}>
-            {publicUrl}
-          </p>
+          <CopyPublicUrl publicUrl={publicUrl} />
           <div className="mt-3 flex items-start justify-between gap-2">
             <div className="flex flex-wrap items-center gap-1">
               <Link href={`/dashboard/pets/${pet.id}`} className="text-sm font-semibold text-(--brand-strong) group-hover:text-(--ink) group-focus:text-(--ink) group-focus-visible:text-(--ink) transition-colors p-1 brand-button-secondary rounded-full">
@@ -92,7 +97,16 @@ export function PetCard({ pet, baseUrl }: Props) {
                 aria-label="Open public page"
                 title="Open public page"
               >
-                <ExternalLink className="h-4.5 w-4.5 text-(--ink-soft)" />
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ExternalLink className="h-4.5 w-4.5 text-(--ink-soft)" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" align="center">
+                    Open public page
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
               </Link>
             </div>
           </div>

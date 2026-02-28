@@ -210,8 +210,8 @@ export default function HomePage() {
       <section className="mx-auto w-full max-w-6xl px-4 pt-3">
         <div className="brand-card p-5 sm:p-6">
           <div className="mb-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--brand-strong)]">
-              3-step onboarding
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-(--brand-strong)">
+              onboarding
             </p>
             <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[var(--ink)]">
               How PawPort works in real life
