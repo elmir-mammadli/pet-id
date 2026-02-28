@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ScanLine, ShoppingBag } from "lucide-react";
+import { ScanLine, ShoppingBag, Inbox } from "lucide-react";
 
 import { ETSY_TAG_URL } from "@/lib/constants";
 import type { Pet } from "@/lib/types/pet";
@@ -38,9 +38,8 @@ export default async function DashboardPage() {
       <header className="glass-panel mx-auto flex w-full max-w-3xl items-center justify-between rounded-full px-4 py-2.5">
         <h1 className="text-base font-extrabold tracking-tight text-(--ink)"><span className="hidden sm:inline">PawPort</span> Dashboard</h1>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/alerts" className="brand-button brand-button-secondary border px-4 py-2 text-sm">
-            <span className="hidden sm:inline">Alerts inbox</span>
-            <span className="inline sm:hidden">Alerts</span>
+          <Link href="/dashboard/alerts" className="rounded-full border brand-button-secondary p-2 text-sm cursor-pointer hover:bg-[#f2f5f0] hover:text-(--ink)">
+            <Inbox className="h-5 w-5 text-(--brand-strong)" />
           </Link>
           <SignOutButton />
         </div>

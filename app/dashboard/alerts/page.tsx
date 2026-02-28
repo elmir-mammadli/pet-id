@@ -10,6 +10,7 @@ import {
   PhoneCall,
   ShieldCheck,
   User,
+  ArrowLeft,
 } from "lucide-react";
 
 import {
@@ -166,17 +167,17 @@ export default async function AlertsInboxPage({ searchParams }: Props) {
   return (
     <main className="min-h-screen px-4 py-8">
       <header className="glass-panel mx-auto flex w-full max-w-4xl items-center justify-between gap-3 rounded-full px-4 py-2.5">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-3">
           <Link
             href="/dashboard"
-            className="text-sm font-semibold text-[var(--brand-strong)] hover:underline"
+            className="rounded-full border brand-button-secondary p-2 text-sm cursor-pointer hover:bg-[#f2f5f0] hover:text-(--ink)"
           >
-            Back to dashboard
+            <ArrowLeft className="h-5 w-5 text-(--brand-strong)" />
           </Link>
-          <h1 className="text-base font-extrabold tracking-tight text-[var(--ink)]">
-            Alerts inbox
-          </h1>
         </div>
+        <h1 className="text-base font-extrabold tracking-tight text-(--ink)">
+            Alerts
+          </h1>
         <span className="brand-pill">
           {totalAlerts} total{freshCount > 0 ? ` · ${freshCount} fresh on this page` : ""}
         </span>

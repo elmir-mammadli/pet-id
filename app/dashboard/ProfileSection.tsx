@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { ProfileData } from "./actions";
 import { updateProfile, type UpdateProfileResult } from "./actions";
+import { UserPen } from "lucide-react";
 
 type Props = {
   profile: ProfileData | null;
@@ -59,9 +60,9 @@ export function ProfileSection({ profile }: Props) {
               setResult(null);
               setIsEditing(true);
             }}
-            className="hover:underline text-sm cursor-pointer text-(--ink-soft) hover:text-(--ink) transition-colors font-semibold"
+            className="rounded-full brand-button-secondary p-2 text-sm cursor-pointer hover:bg-[#f2f5f0] hover:text-(--ink)"
           >
-            Edit
+            <UserPen className="h-5 w-5 text-(--brand-strong)" />
           </button>
         )}
       </div>
