@@ -51,6 +51,12 @@ export const metadata: Metadata = {
   title: "PawPort by Tigo",
   description:
     "Buy an NFC PawPort tag and activate it in minutes. If your dog or cat is found, PawPort sends private alerts so you reconnect quickly.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: "/",
+  },
 };
 
 const trustPoints = [

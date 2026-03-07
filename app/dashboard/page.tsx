@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ScanLine, ShoppingBag, Inbox } from "lucide-react";
 
@@ -9,6 +10,12 @@ import { getProfile } from "./actions";
 import { PetCard } from "./PetCard";
 import { ProfileSection } from "./ProfileSection";
 import { SignOutButton } from "./SignOutButton";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage pets, owner profile, and finder alerts in your PawPort dashboard.",
+  robots: { index: false, follow: false },
+};
 
 function getBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_APP_URL;

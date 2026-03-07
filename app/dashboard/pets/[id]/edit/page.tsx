@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,6 +12,12 @@ import { PetForm } from "../../PetForm";
 
 type Props = {
   params: Promise<{ id: string }>;
+};
+
+export const metadata: Metadata = {
+  title: "Edit Pet",
+  description: "Edit your pet details, status, and documents in PawPort.",
+  robots: { index: false, follow: false },
 };
 
 export default async function EditPetPage({ params }: Props) {

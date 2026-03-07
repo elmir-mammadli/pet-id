@@ -10,6 +10,7 @@ import { SignupForm } from "./SignupForm";
 export const metadata: Metadata = {
   title: "Create Account",
   description: "Create your PawPort account to activate tags and receive finder alerts instantly.",
+  robots: { index: false, follow: false },
 };
 
 type Props = {

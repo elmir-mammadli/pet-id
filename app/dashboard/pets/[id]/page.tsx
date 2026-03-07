@@ -26,6 +26,7 @@ function getBaseUrl(): string {
 export const metadata: Metadata = {
   title: "Pet Profile",
   description: "Owner view of your pet profile and documents.",
+  robots: { index: false, follow: false },
 };
 
 export default async function PetOwnerViewPage({ params }: Props) {

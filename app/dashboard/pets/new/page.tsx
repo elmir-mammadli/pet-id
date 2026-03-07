@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ScanLine, ShoppingBag } from "lucide-react";
 
 import { ETSY_TAG_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Add Pet",
+  description: "Learn how to add a pet by activating a PawPort NFC tag.",
+  robots: { index: false, follow: false },
+};
 
 export default function NewPetPage() {
   return (

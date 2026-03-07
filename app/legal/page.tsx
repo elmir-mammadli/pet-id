@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Legal",
   description: "Legal pages for PawPort, including Privacy Policy and Terms of Service.",
+  alternates: {
+    canonical: "/legal",
+  },
 };
 
 export default function LegalIndexPage() {

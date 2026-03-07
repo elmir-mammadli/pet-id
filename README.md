@@ -20,6 +20,51 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## SEO Launch Setup
+
+This project ships with:
+
+- `robots.txt` at `/robots.txt`
+- XML sitemap at `/sitemap.xml`
+- Open Graph and Twitter metadata in `app/layout.tsx`
+- Optional Google Search Console verification meta tag
+- Optional Google Analytics 4 (GA4) script injection
+- Page-level canonical tags for indexable pages
+- `noindex` metadata on private/auth/dashboard routes
+
+Set these environment variables:
+
+```bash
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+GOOGLE_SITE_VERIFICATION=...
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+After deploy:
+
+1. Open [Google Search Console](https://search.google.com/search-console) and verify your domain.
+2. Submit `https://your-domain.com/sitemap.xml` in Search Console.
+3. Confirm crawl access at `https://your-domain.com/robots.txt`.
+4. Validate GA4 events in DebugView / Realtime reports.
+
+### Target keyword cluster (MVP)
+
+- nfc pet tag
+- lost pet alert system
+- dog nfc collar tag
+- cat nfc id tag
+- digital pet profile
+- finder to owner contact
+- pet reunification
+- pet safety app
+
+### Pre-launch SEO checks
+
+1. Enforce HTTPS at hosting/CDN level (redirect all HTTP to HTTPS).
+2. Validate social previews (Open Graph/Twitter) with share debuggers.
+3. If migrating URLs, add 301 redirects for old paths to new canonical paths.
+4. Run a broken-link crawl (for example with Screaming Frog) and fix 404/chain redirects.
+
 ## Owner Notifications For Found Alerts
 
 When a finder submits an alert, the app stores it in `alerts` and can also notify the owner automatically.

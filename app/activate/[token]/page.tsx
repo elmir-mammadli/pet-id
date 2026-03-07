@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
@@ -8,6 +9,12 @@ import { ClaimTagForm } from "./ClaimTagForm";
 
 type Props = {
   params: Promise<{ token: string }>;
+};
+
+export const metadata: Metadata = {
+  title: "Activate Tag",
+  description: "Claim and activate your PawPort NFC pet tag.",
+  robots: { index: false, follow: false },
 };
 
 function CenterState({ title, description, children }: { title: string; description: string; children?: React.ReactNode }) {

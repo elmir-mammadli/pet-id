@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 import "./globals.css";
 
@@ -24,15 +25,16 @@ export const metadata: Metadata = {
     template: "%s | PawPort by Tigo",
   },
   description:
-    "PawPort by Tigo helps families reunite with lost dogs and cats faster through smart digital tags, private contact flows, and instant finder alerts.",
+    "PawPort by Tigo helps reunite lost pets faster with NFC tags, private contact flows, and instant finder alerts.",
   applicationName: "PawPort by Tigo",
   keywords: [
-    "pawport tag",
-    "lost pet recovery",
-    "dog qr tag",
-    "cat id tag",
+    "nfc pet tag",
+    "lost pet alert system",
+    "dog nfc collar tag",
+    "cat nfc id tag",
     "digital pet profile",
-    "pet owner alert",
+    "finder to owner contact",
+    "pet reunification",
     "pet safety app",
   ],
   openGraph: {
@@ -44,7 +46,7 @@ export const metadata: Metadata = {
     siteName: "PawPort by Tigo",
     images: [
       {
-        url: "/images/hero-pet.png",
+        url: "/images/hero-nfc.png",
         width: 1200,
         height: 630,
         alt: "PawPort by Tigo digital tag and pet safety experience",
@@ -56,7 +58,10 @@ export const metadata: Metadata = {
     title: "PawPort by Tigo",
     description:
       "Protect your dog or cat with PawPort by Tigo and instant finder contact.",
-    images: ["/images/hero-pet.png"],
+    images: ["/images/hero-nfc.png"],
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
   robots: {
     index: true,
@@ -77,9 +82,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim();
+
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        {gaMeasurementId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaMeasurementId}');`}
+            </Script>
+          </>
+        )}
+      </body>
     </html>
   );
 }

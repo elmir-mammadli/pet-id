@@ -59,10 +59,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: pageTitle,
     description,
+    alternates: {
+      canonical: `/p/${encodeURIComponent(pet.public_id)}`,
+    },
     openGraph: {
       title: pageTitle,
       description,
       type: "website",
+      url: `/p/${encodeURIComponent(pet.public_id)}`,
       images: pet.photo_path
         ? [
             {
