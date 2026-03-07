@@ -33,6 +33,13 @@ type NotificationContent = {
   sms: string;
 };
 
+type ResendConfig = {
+  apiKey: string;
+  fromEmail: string;
+};
+
+const RESEND_DEV_FROM = "PawPort Alerts <onboarding@resend.dev>";
+
 function normalizePhone(phone: string): string {
   return phone.replace(/\D/g, "");
 }
@@ -53,6 +60,32 @@ function getAppBaseUrl(): string {
   } catch {
     return "http://localhost:3000";
   }
+}
+
+function getEmailAddress(value: string): string {
+  const match = value.match(/<([^>]+)>/);
+  return (match?.[1] ?? value).trim().toLowerCase();
+}
+
+function isResendDevSender(value: string): boolean {
+  return getEmailAddress(value).endsWith("@resend.dev");
+}
+
+function getResendConfig(): ResendConfig | null {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) return null;
+
+  const configuredFrom = process.env.RESEND_FROM_EMAIL?.trim();
+  const fallbackFrom = process.env.NODE_ENV === "production" ? null : RESEND_DEV_FROM;
+  const fromEmail = configuredFrom || fallbackFrom;
+  if (!fromEmail) return null;
+
+  // In production, only verified-domain senders should be used.
+  if (process.env.NODE_ENV === "production" && isResendDevSender(fromEmail)) {
+    return null;
+  }
+
+  return { apiKey, fromEmail };
 }
 
 function escapeHtml(value: string): string {
@@ -181,14 +214,74 @@ function buildContent(input: OwnerAlertNotificationInput): NotificationContent {
                     <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
                       <tr>
                         <td style="padding:0 10px 10px 0;">
-                          <a href="${escapeHtml(alertsUrl)}" style="display:inline-block;padding:12px 18px;background:#2f8a57;border:1px solid #2f8a57;border-radius:999px;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;">
+                          <a href="${escapeHtml(alertsUrl)}"
+                             style="display:inline-block;padding:12px 18px;background:#2f8a57;border:1px solid #2f8a57;border-radius:999px;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;"
+                             data-mobile-label="Open alerts"
+                             data-desktop-label="Open alerts inbox"
+                             onclick="
+                               var isMobile = typeof window !== 'undefined' &&
+                                 (window.innerWidth < 640 ||
+                                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+                               var label = isMobile
+                                 ? this.getAttribute('data-mobile-label')
+                                 : this.getAttribute('data-desktop-label');
+                               this.textContent = label;
+                             "
+                             onmouseover="
+                               var isMobile = typeof window !== 'undefined' &&
+                                 (window.innerWidth < 640 ||
+                                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+                               var label = isMobile
+                                 ? this.getAttribute('data-mobile-label')
+                                 : this.getAttribute('data-desktop-label');
+                               this.textContent = label;
+                             "
+                          >
                             Open alerts inbox
                           </a>
+                          <script>
+                            (function() {
+                              var anchors = document.querySelectorAll('a[data-mobile-label][data-desktop-label]');
+                              var isMobile = typeof window !== 'undefined' &&
+                                (window.innerWidth < 640 ||
+                                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+                              anchors.forEach(function(a) {
+                                a.textContent = isMobile
+                                  ? a.getAttribute('data-mobile-label')
+                                  : a.getAttribute('data-desktop-label');
+                              });
+                            })();
+                          </script>
                         </td>
                         <td style="padding:0 0 10px 0;">
-                          <a href="${escapeHtml(publicUrl)}" style="display:inline-block;padding:12px 18px;background:#ffffff;border:1px solid #c9d2c6;border-radius:999px;color:#1f2a20;text-decoration:none;font-size:14px;font-weight:700;">
+                          <a href="${escapeHtml(publicUrl)}"
+                             style="display:inline-block;padding:12px 18px;background:#ffffff;border:1px solid #c9d2c6;border-radius:999px;color:#1f2a20;text-decoration:none;font-size:14px;font-weight:700;"
+                             data-mobile-label="Public page"
+                             data-desktop-label="Open public pet page"
+                             onclick="
+                               var isMobile = typeof window !== 'undefined' &&
+                                 (window.innerWidth < 640 ||
+                                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+                               var label = isMobile
+                                 ? this.getAttribute('data-mobile-label')
+                                 : this.getAttribute('data-desktop-label');
+                               this.textContent = label;
+                             "
+                             onmouseover="
+                               var isMobile = typeof window !== 'undefined' &&
+                                 (window.innerWidth < 640 ||
+                                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+                               var label = isMobile
+                                 ? this.getAttribute('data-mobile-label')
+                                 : this.getAttribute('data-desktop-label');
+                               this.textContent = label;
+                             "
+                          >
                             Open public pet page
                           </a>
+                          <script>
+                            (function() {
+                              var anchors = document.querySelectorAll('a[data-mobile-label][data-desktop-label]');
                         </td>
                       </tr>
                     </table>
@@ -218,21 +311,20 @@ function buildContent(input: OwnerAlertNotificationInput): NotificationContent {
 }
 
 async function sendEmail(ownerEmail: string, content: NotificationContent): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
-  const fromEmail = process.env.RESEND_FROM_EMAIL?.trim();
+  const config = getResendConfig();
 
-  if (!apiKey || !fromEmail) {
+  if (!config) {
     throw new Error("Resend is not configured.");
   }
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: fromEmail,
+      from: config.fromEmail,
       to: [ownerEmail],
       subject: content.subject,
       text: content.text,
@@ -292,7 +384,7 @@ export async function notifyOwnerOfFinderAlert(
   const email = input.ownerEmail?.trim();
   if (!email) {
     result.skipped.push("owner_email_missing");
-  } else if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL) {
+  } else if (!getResendConfig()) {
     result.skipped.push("email_not_configured");
   } else {
     result.attempted.push("email");

@@ -78,6 +78,11 @@ RESEND_API_KEY=...
 RESEND_FROM_EMAIL=alerts@your-domain.com
 ```
 
+Notes:
+
+- In production, `RESEND_FROM_EMAIL` must be on a verified Resend domain (not `@resend.dev`).
+- In non-production, the app falls back to `onboarding@resend.dev` if `RESEND_FROM_EMAIL` is not set.
+
 ### SMS notifications (Twilio)
 
 Set these environment variables:
